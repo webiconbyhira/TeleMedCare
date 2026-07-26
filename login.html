@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TeleCare — Login / Sign Up</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+<style>
+  body { background: linear-gradient(145deg, #0e4a3f 0%, var(--dark) 45%, #268f73 100%); min-height:100vh; font-family:'DM Sans',system-ui,sans-serif; }
+  .auth-wrap { min-height:100vh; display:flex; align-items:center; justify-content:center; padding:calc(var(--nav-h, 52px) + 16px) clamp(12px,4%,24px) 24px; }
+  .auth-card { background:var(--white); border-radius:var(--radius-lg); box-shadow:var(--shadow-lg); width:100%; max-width:380px; overflow:hidden; border:1px solid var(--border); }
+  .auth-tabs { display:flex; }
+  .auth-tab { flex:1; padding:12px; text-align:center; font-weight:600; font-size:0.86rem; cursor:pointer; border:none; background:var(--pale); color:var(--muted); font-family:inherit; transition:all 0.2s; }
+  .auth-tab.on { background:var(--primary); color:white; }
+  .auth-body { padding:22px 20px; }
+  .auth-body h2 { font-family:'Playfair Display',serif; font-size:1.2rem; margin-bottom:4px; color:var(--dark); }
+  .auth-body p  { color:var(--muted); font-size:0.82rem; margin-bottom:16px; }
+  .tab-c { display:none; }
+  .tab-c.on { display:block; }
+  .divider { text-align:center; color:var(--muted); font-size:0.76rem; margin:12px 0; position:relative; }
+  .divider::before,.divider::after { content:''; position:absolute; top:50%; width:42%; height:1px; background:var(--border); }
+  .divider::before{left:0} .divider::after{right:0}
+  .auth-foot { text-align:center; color:var(--muted); font-size:0.8rem; margin-top:12px; }
+  .auth-foot a { color:var(--primary); font-weight:600; cursor:pointer; }
+  .back-home { position:fixed; top:14px; left:clamp(12px,4%,20px); color:white; text-decoration:none; font-weight:500; font-size:0.82rem; background:rgba(255,255,255,0.12); padding:6px 12px; border-radius:7px; backdrop-filter:blur(6px); transition:background 0.2s; z-index:10; }
+  .back-home:hover { background:rgba(255,255,255,0.22); }
+  .auth-brand { text-align:center; padding:18px 20px 0; }
+  .auth-brand .logo { font-family:'Playfair Display',serif; font-size:1.35rem; color:var(--dark); font-weight:700; }
+  .auth-brand p { color:var(--muted); font-size:0.78rem; margin-top:2px; }
+  @media (max-width: 400px) { .auth-card { max-width:100%; } }
+</style>
+</head>
+<body>
+<a class="back-home" href="index.html">← Back to Home</a>
+<div class="auth-wrap">
+  <div class="auth-card">
+    <div class="auth-brand">
+      <div class="logo">Tele<span style="color:var(--primary);">Care</span></div>
+      <p>Pakistan's Trusted Healthcare Platform</p>
+    </div>
+    <div class="auth-tabs" style="margin-top:14px;">
+      <button class="auth-tab on" onclick="sw('login',this)">Login</button>
+      <button class="auth-tab" onclick="sw('signup',this)">Sign Up</button>
+    </div>
+    <div class="auth-body">
+
+      <!-- LOGIN -->
+      <div class="tab-c on" id="t-login">
+        <h2>Welcome Back!</h2>
+        <p>Login to manage your appointments</p>
+        <div class="alert" id="lgAlert"></div>
+        <div class="form-group"><label>Email</label><input type="email" id="lgEmail" placeholder="Enter your email"></div>
+        <div class="form-group"><label>Password</label><input type="password" id="lgPass" placeholder="Enter your password"></div>
+        <button class="btn btn-primary btn-full" onclick="doLogin()" id="lgBtn">Login</button>
+        <div class="divider">or</div>
+        <div class="auth-foot">Don't have an account? <a onclick="sw('signup',document.querySelectorAll('.auth-tab')[1])">Sign Up</a></div>
+      </div>
+
+      <!-- SIGNUP -->
+      <div class="tab-c" id="t-signup">
+        <h2>Create Account</h2>
+        <p>Register to book your first appointment</p>
+        <div class="alert" id="sgAlert"></div>
+        <div class="form-group"><label>Full Name</label><input type="text" id="sgName" placeholder="Enter your full name"></div>
+        <div class="form-group"><label>Email</label><input type="email" id="sgEmail" placeholder="Enter your email"></div>
+        <div class="form-group"><label>Phone</label><input type="tel" id="sgPhone" placeholder="e.g. 0300-1234567"></div>
+        <div class="form-group"><label>Password</label><input type="password" id="sgPass" placeholder="Min 6 characters"></div>
+        <button class="btn btn-primary btn-full" onclick="doSignup()" id="sgBtn">Create Account</button>
+        <div class="divider">or</div>
+        <div class="auth-foot">Already have an account? <a onclick="sw('login',document.querySelectorAll('.auth-tab')[0])">Login</a></div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<script>
+function sw(tab, el) {
+  document.querySelectorAll('.auth-tab').forEach(t => t.classList.remove('on'));
+  document.querySelectorAll('.tab-c').forEach(t => t.classList.remove('on'));
+  el.classList.add('on');
+  document.getElementById(`t-${tab}`).classList.add('on');
+}
+
+async function doLogin() {
+  const al = document.getElementById('lgAlert');
+  al.className = 'alert';
+  const email = document.getElementById('lgEmail').value.trim();
+  const pass  = document.getElementById('lgPass').value;
+  if (!email||!pass) { al.className='alert err'; al.textContent='⚠️ Please fill all fields.'; return; }
+  const btn = document.getElementById('lgBtn');
+  btn.disabled=true; btn.innerHTML='<span class="spinner"></span> Logging in...';
+  const fd = new FormData();
+  fd.append('action','login'); fd.append('email',email); fd.append('password',pass);
+  try {
+    const res = await fetch('auth.php',{method:'POST',body:fd});
+    const data = await res.json();
+    if(data.success) { window.location.href='index.html'; }
+    else { al.className='alert err'; al.textContent='❌ '+(data.message||'Invalid credentials.'); }
+  } catch { al.className='alert err'; al.textContent='⚠️ Server se connect nahi ho saka.'; }
+  btn.disabled=false; btn.innerHTML='Login';
+}
+
+async function doSignup() {
+  const al = document.getElementById('sgAlert');
+  al.className = 'alert';
+  const name  = document.getElementById('sgName').value.trim();
+  const email = document.getElementById('sgEmail').value.trim();
+  const phone = document.getElementById('sgPhone').value.trim();
+  const pass  = document.getElementById('sgPass').value;
+  if(!name||!email||!phone||!pass){ al.className='alert err'; al.textContent='⚠️ Please fill all fields.'; return; }
+  if(pass.length<6){ al.className='alert err'; al.textContent='⚠️ Password must be at least 6 characters.'; return; }
+  const btn = document.getElementById('sgBtn');
+  btn.disabled=true; btn.innerHTML='<span class="spinner"></span> Creating...';
+  const fd = new FormData();
+  fd.append('action','signup'); fd.append('name',name); fd.append('email',email); fd.append('phone',phone); fd.append('password',pass);
+  try {
+    const res = await fetch('auth.php',{method:'POST',body:fd});
+    const data = await res.json();
+    if(data.success){ al.className='alert ok'; al.textContent='✅ Account created! Please login.'; setTimeout(()=>sw('login',document.querySelectorAll('.auth-tab')[0]),1500); }
+    else { al.className='alert err'; al.textContent='❌ '+(data.message||'Registration failed.'); }
+  } catch { al.className='alert err'; al.textContent='⚠️ Server se connect nahi ho saka.'; }
+  btn.disabled=false; btn.innerHTML='Create Account';
+}
+</script>
+</body>
+</html>

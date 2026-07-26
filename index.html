@@ -1,0 +1,1139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TeleCare — Your Health, Our Priority</title>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&family=Nunito:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<!--   NAVBAR -->
+<header class="nav-wrap">
+  <nav class="navbar" aria-label="Main navigation">
+    <a class="nav-logo" href="#home">Tele<span>MedCare</span></a>
+    <ul class="nav-links">
+      <li><a href="#home"     class="active" onclick="setNav(this)">Home</a></li>
+      <li><a href="#about"    onclick="setNav(this)">About</a></li>
+      <li><a href="#services" onclick="setNav(this)">Services</a></li>
+      <li><a href="#doctors"  onclick="setNav(this)">Doctors</a></li>
+      <li><a href="#contact"  onclick="setNav(this)">Contact</a></li>
+      <li><a href="video_consult.html" onclick="setNav(this)">Video Consult</a></li>
+      <li><a href="login.html" class="btn-nav">Login</a></li>
+    </ul>
+    <button class="hamburger" onclick="toggleMenu()" aria-label="Open menu" aria-expanded="false" id="menuBtn">
+      <span></span><span></span><span></span>
+    </button>
+  </nav>
+</header>
+
+<div class="mobile-nav" id="mobileNav">
+  <a href="#home"     onclick="closeMob()">Home</a>
+  <a href="#about"    onclick="closeMob()">About</a>
+  <a href="#services" onclick="closeMob()">Services</a>
+  <a href="#doctors"  onclick="closeMob()">Doctors</a>
+  <a href="#contact"  onclick="closeMob()">Contact</a>
+  <a href="login.html">Login</a>
+</div>
+
+<!--
+     SECTION 1 — HOME / HERO
+-->
+<section id="home">
+  <div class="hero-screen">
+    <!-- Left: headline, search, booking -->
+    <div class="hero-content">
+      <div class="hero-tag">
+        <span aria-hidden="true"></span> Pakistan's Trusted Healthcare
+      </div>
+      <h1 class="hero-title">Your Health,<br><em>Our Priority</em></h1>
+      <p class="hero-sub">Trusted doctors across Faisalabad, Lahore &amp; Islamabad.</p>
+
+      <div class="hero-search-card hero-glass-card">
+        <label class="hero-search-label" for="heroSearch">Find doctor</label>
+        <div class="hero-search-row">
+          <span class="search-ico" aria-hidden="true">
+            <svg viewBox="0 0 24 24" width="16" height="16"><circle cx="11" cy="11" r="7" fill="none" stroke="currentColor" stroke-width="2"/><line x1="20" y1="20" x2="16.5" y2="16.5" stroke="currentColor" stroke-width="2"/></svg>
+          </span>
+          <input id="heroSearch" type="search" placeholder="Symptom or doctor..." onkeydown="if(event.key==='Enter')heroSearchGo()">
+          <button type="button" class="hero-search-btn" onclick="heroSearchGo()">Go</button>
+        </div>
+      </div>
+
+      <div class="hero-booking-card hero-glass-card" id="heroBookingBox">
+        <div class="hb-step" id="hbStepCity">
+          <div class="hero-booking-head">
+            <span class="booking-ico" aria-hidden="true">📅</span>
+            <div>
+              <strong>Book appointment</strong>
+              <span>City → doctor → profile → booking</span>
+            </div>
+          </div>
+          <div class="form-group hb-form-group">
+            <label for="heroCity">City</label>
+            <select id="heroCity" class="hero-city-select" aria-describedby="heroCityError" onchange="clearHeroCityError()">
+              <option value="">Select your city</option>
+              <option value="Faisalabad">Faisalabad</option>
+              <option value="Lahore">Lahore</option>
+              <option value="Islamabad">Islamabad</option>
+            </select>
+            <span class="field-error" id="heroCityError" role="alert"></span>
+          </div>
+          <button type="button" class="btn btn-book-sm btn-full-hb" onclick="startHeroBooking()">Continue</button>
+        </div>
+
+        <div class="hb-step hb-hidden" id="hbStepDoctors">
+          <button type="button" class="hb-back" onclick="backHbCity()">← Change city</button>
+          <p class="hb-step-title" id="hbDoctorTitle">Doctors</p>
+          <div class="hb-doctor-list" id="hbDoctorList"></div>
+        </div>
+
+        <div class="hb-step hb-hidden" id="hbStepProfile">
+          <button type="button" class="hb-back" onclick="backHbDoctors()">← Back to doctors</button>
+          <div id="hbProfileContent"></div>
+          <button type="button" class="btn btn-book-sm btn-full-hb" onclick="bookFromHbProfile()">Book appointment</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Right: chatbot -->
+    <aside class="hero-chat-panel" aria-label="Health assistant chat">
+      <div class="chatbot-card hero-chatbot">
+        <div class="chatbot-head">
+          <div class="bot-icon" aria-hidden="true">TC</div>
+          <div>
+            <h3>Health Assistant</h3>
+            <p>Ask about symptoms or specialists</p>
+          </div>
+        </div>
+        <div class="chat-box" id="chatBox">
+          <div class="chat-msg bot">Hello. Share your symptoms and I'll suggest the right doctor.</div>
+        </div>
+        <div class="chat-input-row">
+          <input class="chat-input" id="chatIn" type="text" placeholder="Type your concern..." onkeydown="if(event.key==='Enter')sendChat()">
+          <button class="chat-send" type="button" onclick="sendChat()" aria-label="Send">
+            <svg viewBox="0 0 24 24"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+          </button>
+        </div>
+        <div class="quick-chips">
+        <span class="chip" onclick="quickChat('I have headache and fever')">Headache &amp; fever</span>
+        <span class="chip" onclick="quickChat('chest pain heart')">Chest pain</span>
+        <span class="chip" onclick="quickChat('emergency help')">Emergency</span>
+        </div>
+      </div>
+    </aside>
+  </div>
+</section>
+
+<!-- Features Bar -->
+<div class="features-bar">
+  <div class="features-inner">
+    <div class="feat-item">
+      <div class="feat-icon">📅</div>
+      <div><h4>Easy Appointment Booking</h4><p>Book appointments with trusted doctors in just a few clicks.</p></div>
+    </div>
+    <div class="feat-item">
+      <div class="feat-icon">👨‍⚕️</div>
+      <div><h4>Expert Doctors</h4><p>Connect with experienced specialists across various medical fields.</p></div>
+    </div>
+    <div class="feat-item">
+      <div class="feat-icon">📹</div>
+      <div><h4>Video Consultation</h4><p><a href="video_consult.html" style="color:var(--primary);font-weight:700;">Book a live video call</a> with any doctor — instant Google Meet link.</p></div>
+    </div>
+    <div class="feat-item">
+      <div class="feat-icon">🔒</div>
+      <div><h4>Secure & Reliable</h4><p>Your health information is safe with us. We ensure privacy and security.</p></div>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════
+     SECTION 2 — ABOUT
+════════════════════════════════════════ -->
+<section id="about">
+  <div class="section-wrap">
+    <div class="about-grid">
+
+      <div class="about-visual">
+        <span class="about-big-icon">🏥</span>
+        <h3>Caring for Pakistan Since 2020</h3>
+        <p>We connect patients with the best doctors across Faisalabad, Lahore, and Islamabad — making quality healthcare accessible to everyone.</p>
+        <div class="about-stats">
+          <div class="about-stat"><div class="n">50+</div><div class="l">Specialist Doctors</div></div>
+          <div class="about-stat"><div class="n">10k+</div><div class="l">Happy Patients</div></div>
+          <div class="about-stat"><div class="n">3</div><div class="l">Cities Covered</div></div>
+          <div class="about-stat"><div class="n">4.8★</div><div class="l">Average Rating</div></div>
+        </div>
+      </div>
+
+      <div>
+        <div class="section-tag">About TeleCare</div>
+        <h2 class="section-title">Why We Started <span>TeleCare</span></h2>
+        <p style="color:var(--muted);margin-bottom:28px;line-height:1.75;">TeleCare was founded with a simple mission: to make quality healthcare easy, fast, and accessible for every Pakistani family. We believe that finding and booking a trusted doctor should take minutes, not days.</p>
+        <p style="color:var(--muted);margin-bottom:32px;line-height:1.75;">Our platform connects you with verified, experienced specialists across multiple cities. Whether you need a heart checkup, skin consultation, or child care — TeleCare has you covered.</p>
+
+        <div class="about-points">
+          <div class="about-point">
+            <div class="point-icon">✅</div>
+            <div><h4>Verified Doctors Only</h4><p>Every doctor on our platform is verified, licensed, and experienced in their specialty.</p></div>
+          </div>
+          <div class="about-point">
+            <div class="point-icon">⚡</div>
+            <div><h4>Instant Booking</h4><p>Book your appointment in under 2 minutes — no phone calls, no waiting.</p></div>
+          </div>
+          <div class="about-point">
+            <div class="point-icon">🔐</div>
+            <div><h4>Private & Secure</h4><p>Your medical records and personal data are fully encrypted and private.</p></div>
+          </div>
+          <div class="about-point">
+            <div class="point-icon">🤖</div>
+            <div><h4>AI Health Assistant</h4><p>Get instant health advice and doctor recommendations from our built-in AI chatbot.</p></div>
+          </div>
+        </div>
+
+        <div style="margin-top:32px;">
+          <button class="btn btn-primary" onclick="scrollTo('#doctors')">Meet Our Doctors →</button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- 
+     SECTION 3 — SERVICES
+ -->
+<section id="services">
+  <div class="section-wrap">
+    <div class="text-center">
+      <div class="section-tag">Our Services</div>
+      <h2 class="section-title">Medical Specialties We Cover</h2>
+      <p class="section-sub">From heart care to child health — our expert doctors cover all major medical specialties.</p>
+    </div>
+    <div class="services-grid">
+      <div class="service-card"><span class="svc-icon">❤️</span><h4>Cardiology</h4><p>Heart disease, preventive care, ECG, and interventional cardiology procedures.</p></div>
+      <div class="service-card"><span class="svc-icon">🧠</span><h4>Neurology</h4><p>Epilepsy, migraine, stroke management, and brain disorder treatment.</p></div>
+      <div class="service-card"><span class="svc-icon">🫁</span><h4>Dermatology</h4><p>Skin diseases, acne, cosmetic treatments, and laser therapy.</p></div>
+      <div class="service-card"><span class="svc-icon">🦴</span><h4>Orthopedics</h4><p>Bone fractures, joint replacements, sports injuries, and spine care.</p></div>
+      <div class="service-card"><span class="svc-icon">👁️</span><h4>Ophthalmology</h4><p>Eye care, vision correction, cataract surgery, and retinal disorders.</p></div>
+      <div class="service-card"><span class="svc-icon">🍼</span><h4>Pediatrics</h4><p>Child health, vaccinations, growth disorders, and pediatric emergencies.</p></div>
+      <div class="service-card"><span class="svc-icon">🦷</span><h4>Dentistry</h4><p>Dental checkups, cleaning, fillings, and oral surgery.</p></div>
+      <div class="service-card"><span class="svc-icon">💊</span><h4>General Medicine</h4><p>Fever, infections, chronic disease management, and routine checkups.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- 
+     SECTION 4 — DOCTORS + BOOKING
+-->
+<section id="doctors">
+  <div class="section-wrap">
+    <div class="text-center">
+      <div class="section-tag">Expert Recommendations</div>
+      <h2 class="section-title">Meet Our <span>Specialist Doctors</span></h2>
+      <p class="section-sub">Choose a doctor and book your appointment instantly — no waiting, no hassle.</p>
+    </div>
+
+    <!-- Search & Filter -->
+    <div class="doctor-search-row">
+      <div class="search-box">
+        <input type="text" id="docSearch" placeholder="Symptom, doctor, or specialty..." oninput="onDocSearchInput()">
+        <button><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></button>
+      </div>
+      <div class="filter-chips" id="cityChips">
+        <span class="f-chip city-chip on" data-city="all" onclick="setCity('all',this)">All cities</span>
+        <span class="f-chip city-chip" data-city="Faisalabad" onclick="setCity('Faisalabad',this)">Faisalabad</span>
+        <span class="f-chip city-chip" data-city="Lahore" onclick="setCity('Lahore',this)">Lahore</span>
+        <span class="f-chip city-chip" data-city="Islamabad" onclick="setCity('Islamabad',this)">Islamabad</span>
+      </div>
+      <div class="filter-chips" style="margin-top:8px;">
+        <span class="f-chip spec-chip on" onclick="setSpec('all',this)">All specialties</span>
+        <span class="f-chip spec-chip" onclick="setSpec('Cardiologist',this)">Cardiology</span>
+        <span class="f-chip spec-chip" onclick="setSpec('Dermatologist',this)">Dermatology</span>
+        <span class="f-chip spec-chip" onclick="setSpec('Neurologist',this)">Neurology</span>
+        <span class="f-chip spec-chip" onclick="setSpec('Pediatrician',this)">Pediatrics</span>
+        <span class="f-chip spec-chip" onclick="setSpec('Orthopedic',this)">Orthopedics</span>
+        <span class="f-chip spec-chip" onclick="setSpec('General Physician',this)">General</span>
+        <span class="f-chip spec-chip" onclick="setSpec('Ophthalmologist',this)">Eye care</span>
+      </div>
+    </div>
+
+    <div id="symptomBanner" class="symptom-banner" hidden>
+      <div class="symptom-banner-inner">
+        <span class="symptom-banner-ico" aria-hidden="true">✓</span>
+        <div>
+          <strong id="symptomBannerTitle">Symptom match</strong>
+          <p id="symptomBannerText"></p>
+        </div>
+        <button type="button" class="symptom-banner-clear" onclick="clearSymptomSearch()">Clear</button>
+      </div>
+    </div>
+
+    <!-- Doctor Cards -->
+    <div class="doctors-grid" id="docsGrid"></div>
+  </div>
+</section>
+
+<!--
+     BOOKING FLOW (hidden inside page)
+ -->
+<section id="booking" style="display:none;">
+  <div class="section-wrap">
+
+    <!-- Steps -->
+    <div class="steps-bar">
+      <div class="stp active" id="si1"><div class="stp-num">1</div><span>Doctor & Time</span></div>
+      <div class="stp-line" id="sl1"></div>
+      <div class="stp" id="si2"><div class="stp-num">2</div><span>Patient Details</span></div>
+      <div class="stp-line" id="sl2"></div>
+      <div class="stp" id="si3"><div class="stp-num">3</div><span>Confirm</span></div>
+    </div>
+
+    <!-- Step 1: Doctor Detail + Time Slot -->
+    <div class="bk-panel on" id="bp1">
+      <button class="back-btn" onclick="closeBooking()">← Back to Doctors</button>
+      <h2 style="font-family:'Playfair Display',serif;color:var(--dark);font-size:1.5rem;margin-bottom:4px;" id="bk-title">Choose an Appointment Time</h2>
+      <p style="color:var(--muted);margin-bottom:24px;" id="bk-sub">Select a date and time slot</p>
+
+      <div class="bk-grid">
+        <div class="doc-profile-card">
+          <div class="dph">
+            <div class="dph-ava" id="b-emo">AA</div>
+            <div>
+              <h2 id="b-name">Dr. Ahmed Ali</h2>
+              <div class="spec" id="b-spec">Cardiologist</div>
+              <div class="rating-row" style="justify-content:flex-start;margin-top:6px;">
+                <span class="star">★</span>
+                <strong id="b-rate">4.8</strong>
+                <span id="b-rev">(120 Reviews)</span>
+              </div>
+            </div>
+          </div>
+          <div class="info-row"><span class="il">🏥 Hospital</span><span class="iv" id="b-hosp"></span></div>
+          <div class="info-row"><span class="il">📍 Address</span><span class="iv" id="b-addr"></span></div>
+          <div class="info-row"><span class="il">🏙️ City</span><span class="iv" id="b-city"></span></div>
+          <div class="info-row"><span class="il">🩺 Experience</span><span class="iv" id="b-exp"></span></div>
+          <div class="info-row"><span class="il">💰 Fee</span><span class="iv" id="b-fee"></span></div>
+          <div class="abt-box"><h4>About Doctor</h4><p id="b-about"></p></div>
+          <div class="tm-box"><h4>⏰ Available Timing</h4><p id="b-time"></p></div>
+        </div>
+
+        <div class="slot-card">
+          <h3>Select Date & Time</h3>
+          <div class="alert" id="bkAlert"></div>
+          <div class="form-group">
+            <label>Select Date</label>
+            <input type="date" id="bkDate" onchange="loadSlots()">
+          </div>
+          <div class="form-group">
+            <label>Available Time Slots</label>
+            <div class="slots-grid" id="slotsGrid">
+              <p style="color:var(--muted);font-size:0.88rem;">Please select a date first</p>
+            </div>
+            <div class="slot-legend" id="slotLeg" style="display:none;">
+              <span>🟢 Available</span><span>⬜ Booked</span>
+            </div>
+          </div>
+          <input type="hidden" id="pickedSlot" value="">
+          <button class="btn btn-primary btn-full" onclick="goStep(2)">Proceed to Booking →</button>
+          <div class="notice-box" style="margin-top:12px;">ℹ️ Please arrive 10 minutes before your appointment time.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Step 2: Patient Form -->
+    <div class="bk-panel" id="bp2">
+      <button class="back-btn" onclick="goStep(1)">← Back</button>
+      <h2 style="font-family:'Playfair Display',serif;color:var(--dark);font-size:1.5rem;margin-bottom:4px;">Appointment Booking for</h2>
+      <p style="color:var(--primary);font-weight:700;font-size:1.05rem;margin-bottom:24px;" id="s2name">Dr. Ahmed Ali</p>
+      <div class="bk-grid">
+        <div style="background:var(--white);border-radius:var(--radius);border:1.5px solid var(--border);padding:28px;box-shadow:var(--shadow-sm);">
+          <h3 style="color:var(--dark);font-weight:700;margin-bottom:20px;">Patient Information</h3>
+          <div class="alert" id="fAlert"></div>
+          <div class="form-group"><label>Full Name *</label><input type="text" id="pName" placeholder="Enter your full name"></div>
+          <div class="form-group"><label>Email *</label><input type="email" id="pEmail" placeholder="Enter your email"></div>
+          <div class="form-group"><label>Phone Number *</label><input type="tel" id="pPhone" placeholder="e.g. 0300-1234567"></div>
+          <div class="form-group"><label>Reason for Visit / Symptoms</label><textarea id="pSymp" placeholder="Write your symptoms or medical history"></textarea></div>
+        </div>
+        <div>
+          <div class="summary-box">
+            <h4>Appointment Summary</h4>
+            <div class="sum-row"><span>Doctor</span><span id="s-doc">—</span></div>
+            <div class="sum-row"><span>Specialty</span><span id="s-spec">—</span></div>
+            <div class="sum-row"><span>Hospital</span><span id="s-hosp">—</span></div>
+            <div class="sum-row"><span>Date</span><span id="s-date">—</span></div>
+            <div class="sum-row"><span>Time</span><span id="s-time">—</span></div>
+            <div class="sum-row"><span>Fee</span><span id="s-fee">—</span></div>
+          </div>
+          <button class="btn btn-primary btn-full" onclick="submitBooking()" id="confBtn">Confirm Appointment</button>
+          <div class="notice-box" style="margin-top:12px;">ℹ️ Please arrive 10 minutes before your appointment time.</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- 
+     SECTION 5 — CONTACT
+ -->
+<section id="contact">
+  <div class="section-wrap">
+    <div class="text-center" style="margin-bottom:32px;">
+      <div class="section-tag">Get In Touch</div>
+      <h2 class="section-title" style="color:white;">Contact <span style="color:var(--light-green);">Us</span></h2>
+      <p class="section-sub" style="color:rgba(255,255,255,0.75);margin-bottom:0;">Have questions? We're here to help 24/7.</p>
+    </div>
+    <div class="contact-grid">
+      <div class="contact-info">
+        <h3>Let's Talk</h3>
+        <p style="margin-bottom:24px;">Whether you have questions about booking, need help finding a doctor, or want to know more about our services — reach out!</p>
+        <div class="c-item"><div class="c-icon">📍</div><div><h4>Our Office</h4><p>123 Main Boulevard, Faisalabad, Pakistan</p></div></div>
+        <div class="c-item"><div class="c-icon">📞</div><div><h4>Phone</h4><p>+92 300 1234567</p></div></div>
+        <div class="c-item"><div class="c-icon">✉️</div><div><h4>Email</h4><p>support@telecare.pk</p></div></div>
+        <div class="c-item"><div class="c-icon">🕐</div><div><h4>Working Hours</h4><p>Monday – Saturday: 9 AM – 9 PM</p></div></div>
+      </div>
+      <div class="contact-form">
+        <h3>Send Us a Message</h3>
+        <div class="alert" id="ctAlert"></div>
+        <div class="form-group"><label>Your Name</label><input type="text" id="ctName" placeholder="Enter your name"></div>
+        <div class="form-group"><label>Email</label><input type="email" id="ctEmail" placeholder="Enter your email"></div>
+        <div class="form-group"><label>Message</label><textarea id="ctMsg" placeholder="Write your message..."></textarea></div>
+        <button class="btn btn-primary btn-full" onclick="sendContact()">Send Message</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 
+     FOOTER
+ -->
+<footer>
+  <p style="margin-bottom:8px;">
+    <strong style="color:var(--light-green);">TeleCare</strong> — Pakistan's Trusted Healthcare Platform
+  </p>
+  <p>© 2024 TeleCare. All rights reserved. &nbsp;|&nbsp;
+    <a href="#about">About</a> &nbsp;|&nbsp;
+    <a href="#services">Services</a> &nbsp;|&nbsp;
+    <a href="#contact">Contact</a>
+  </p>
+</footer>
+
+<!-- DOCTOR PROFILE -->
+<div class="overlay" id="profileOv" onclick="if(event.target===this)closeProfile()">
+  <div class="doctor-profile-modal" role="dialog" aria-labelledby="profileName">
+    <button type="button" class="modal-close" onclick="closeProfile()" aria-label="Close">&times;</button>
+    <div id="profileBody"></div>
+    <div class="profile-actions">
+      <button type="button" class="btn btn-outline btn-full" onclick="closeProfile()">Close</button>
+      <button type="button" class="btn btn-primary btn-full" id="profileBookBtn" onclick="bookFromProfile()">Book Appointment</button>
+    </div>
+  </div>
+</div>
+
+<!-- CITY → DOCTOR PICK (from home booking) -->
+<div class="overlay" id="cityDoctorOv" onclick="if(event.target===this)closeCityModal()">
+  <div class="pick-doctor-modal" role="dialog" aria-labelledby="pickDocTitle">
+    <button type="button" class="modal-close" onclick="closeCityModal()" aria-label="Close">&times;</button>
+    <h3 id="pickDocTitle">Select a doctor</h3>
+    <p class="pick-doc-sub" id="pickDocSub">Choose a specialist in your city</p>
+    <div class="pick-doc-list" id="heroDocList"></div>
+  </div>
+</div>
+
+<!-- SUCCESS MODAL — Enhanced with doctor list -->
+<div class="overlay" id="successOv">
+  <div class="modal" style="max-width:460px;max-height:min(90vh,600px);overflow-y:auto;">
+    <div class="modal-icon"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div>
+    <h3>Appointment Booked! 🎉</h3>
+    <p>Your appointment has been confirmed successfully.</p>
+    <div class="modal-det" id="modalDet"></div>
+    <div class="success-doctors-section" id="successDoctorSection">
+      <h4>📋 Other Available Doctors</h4>
+      <div class="success-doc-list" id="successDocList"></div>
+    </div>
+    <div style="display:flex;gap:8px;margin-top:14px;flex-wrap:wrap;">
+      <button class="btn btn-outline btn-full" onclick="closeModal()" style="flex:1;">Back to Home</button>
+      <a href="video_consult.html" class="btn btn-primary btn-full" style="flex:1;text-decoration:none;">📹 Video Consult</a>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════
+     JAVASCRIPT
+════════════════════════════════════════ -->
+<script>
+/* ── DOCTORS DATA ── */
+const DOCS = [
+  { id:1, name:"Dr. Ahmed Ali",    spec:"Cardiologist",  rate:4.8, rev:120, hosp:"City Care Hospital",     city:"Faisalabad", addr:"123 Main Boulevard, Faisalabad, Pakistan", exp:"10+ Years", fee:"Rs. 800",   treats:["heart","heart attack","heartattack","chest pain","cardiac","blood pressure","cholesterol","palpitation"], about:"Highly experienced cardiologist specializing in heart diseases, preventive care, and interventional procedures.", timing:"Monday - Saturday | 04:00 PM - 09:00 PM", slots:["04:00 PM","05:00 PM","06:00 PM","07:00 PM","08:00 PM","09:00 PM"], img:"https://images.unsplash.com/photo-1612349317150-e88e6ff1fcc2?w=200&h=200&fit=crop" },
+  { id:2, name:"Dr. Sara Khan",    spec:"Dermatologist", rate:4.7, rev:98,  hosp:"Health Plus Hospital",   city:"Lahore",     addr:"45 Garden Town, Lahore, Pakistan",          exp:"8+ Years",  fee:"Rs. 1,000", treats:["skin","rash","acne","allergy","eczema","itching","dermatology","hair fall"], about:"Specialist in skin diseases, cosmetic dermatology, and laser treatments.", timing:"Monday - Friday | 10:00 AM - 04:00 PM", slots:["10:00 AM","11:00 AM","12:00 PM","01:00 PM","02:00 PM","03:00 PM"], img:"https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=200&h=200&fit=crop" },
+  { id:3, name:"Dr. Usman Farooq", spec:"Neurologist",   rate:4.9, rev:110, hosp:"Metro Hospital",         city:"Islamabad",  addr:"Blue Area, Islamabad, Pakistan",            exp:"12+ Years", fee:"Rs. 1,200", treats:["headache","migraine","seizure","stroke","brain","dizziness","numbness","paralysis"], about:"Senior neurologist with expertise in epilepsy, stroke management, and neurodegenerative disorders.", timing:"Tuesday - Sunday | 02:00 PM - 08:00 PM", slots:["02:00 PM","03:00 PM","04:00 PM","05:00 PM","06:00 PM","07:00 PM"], img:"https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&h=200&fit=crop" },
+  { id:4, name:"Dr. Ayesha Malik", spec:"Pediatrician",  rate:4.6, rev:85,  hosp:"Children Care Hospital", city:"Lahore",     addr:"Model Town, Lahore, Pakistan",              exp:"6+ Years",  fee:"Rs. 700",   treats:["child","baby","pediatric","vaccination","fever child","cough child","growth"], about:"Specialist in child health, growth disorders, and pediatric emergencies.", timing:"Monday - Saturday | 09:00 AM - 03:00 PM", slots:["09:00 AM","10:00 AM","11:00 AM","12:00 PM","01:00 PM","02:00 PM"], img:"https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=200&h=200&fit=crop" },
+  { id:5, name:"Dr. Bilal Hussain",spec:"Orthopedic",    rate:4.8, rev:74,  hosp:"Bone & Joint Clinic",    city:"Faisalabad", addr:"D-Ground, Faisalabad, Pakistan",            exp:"9+ Years",  fee:"Rs. 900",   treats:["bone","fracture","joint","knee pain","back pain","sports injury","arthritis","sprain"], about:"Specialist in bone fractures, joint replacements, and sports injuries.", timing:"Tuesday - Sunday | 03:00 PM - 08:00 PM", slots:["03:00 PM","04:00 PM","05:00 PM","06:00 PM","07:00 PM"], img:"https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=200&h=200&fit=crop" },
+  { id:6, name:"Dr. Nadia Rehman", spec:"Dermatologist", rate:4.5, rev:60,  hosp:"Skin Care Centre",       city:"Islamabad",  addr:"F-7, Islamabad, Pakistan",                  exp:"5+ Years",  fee:"Rs. 800",   treats:["skin","acne","allergy","cosmetic","laser","pigmentation","fungal"], about:"Dermatologist specializing in acne treatment, skin allergies, and cosmetic procedures.", timing:"Monday - Friday | 11:00 AM - 05:00 PM", slots:["11:00 AM","12:00 PM","01:00 PM","02:00 PM","03:00 PM","04:00 PM"], img:"https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=200&h=200&fit=crop" },
+  { id:7, name:"Dr. Hassan Raza",  spec:"General Physician", rate:4.6, rev:92,  hosp:"Al-Shifa Clinic",      city:"Faisalabad", addr:"Susan Road, Faisalabad",                    exp:"7+ Years",  fee:"Rs. 600",   treats:["fever","flu","cold","cough","infection","diabetes","bp"], about:"General physician for routine checkups, fever, and chronic disease management.", timing:"Monday - Saturday | 09:00 AM - 02:00 PM", slots:["09:00 AM","10:00 AM","11:00 AM","12:00 PM","01:00 PM"], img:"https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&h=200&fit=crop" },
+  { id:8, name:"Dr. Fatima Noor",  spec:"Ophthalmologist", rate:4.7, rev:55,  hosp:"Vision Eye Hospital",    city:"Faisalabad", addr:"Kotwali Road, Faisalabad",                  exp:"6+ Years",  fee:"Rs. 750",   treats:["eye","vision","cataract","red eye","blurry"], about:"Eye specialist for vision problems, cataract screening, and retinal care.", timing:"Tuesday - Sunday | 10:00 AM - 04:00 PM", slots:["10:00 AM","11:00 AM","12:00 PM","02:00 PM","03:00 PM"], img:"https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=200&h=200&fit=crop" },
+  { id:9, name:"Dr. Imran Shah",   spec:"Cardiologist",  rate:4.8, rev:88,  hosp:"Heart Institute Lahore", city:"Lahore",     addr:"Jail Road, Lahore",                         exp:"11+ Years", fee:"Rs. 1,100", treats:["heart","chest pain","hypertension","ecg"], about:"Interventional cardiologist with focus on preventive heart care.", timing:"Monday - Friday | 03:00 PM - 08:00 PM", slots:["03:00 PM","04:00 PM","05:00 PM","06:00 PM","07:00 PM"], img:"https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=200&h=200&fit=crop" },
+  { id:10,name:"Dr. Rabia Tariq",  spec:"Neurologist",   rate:4.7, rev:67,  hosp:"Neuro Care Lahore",      city:"Lahore",     addr:"Gulberg III, Lahore",                       exp:"9+ Years",  fee:"Rs. 1,000", treat:["headache","migraine","epilepsy","stroke"], about:"Neurologist for headaches, seizures, and nerve-related disorders.", timing:"Wednesday - Monday | 11:00 AM - 05:00 PM", slots:["11:00 AM","12:00 PM","01:00 PM","02:00 PM","03:00 PM"], img:"https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=200&h=200&fit=crop" },
+  { id:11,name:"Dr. Kamran Ali",   spec:"Orthopedic",    rate:4.6, rev:71,  hosp:"Ortho Plus Lahore",      city:"Lahore",     addr:"DHA Phase 5, Lahore",                       exp:"8+ Years",  fee:"Rs. 950",   treats:["knee","back pain","fracture","sports"], about:"Orthopedic surgeon for joint pain, fractures, and rehabilitation.", timing:"Monday - Saturday | 04:00 PM - 09:00 PM", slots:["04:00 PM","05:00 PM","06:00 PM","07:00 PM"], img:"https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&h=200&fit=crop" },
+  { id:12,name:"Dr. Sana Iqbal",   spec:"Pediatrician",  rate:4.8, rev:102, hosp:"PIMS Children Wing",     city:"Islamabad",  addr:"G-8, Islamabad",                            exp:"7+ Years",  fee:"Rs. 850",   treats:["child","vaccination","fever","growth"], about:"Pediatrician for infants, vaccinations, and child emergencies.", timing:"Monday - Friday | 09:00 AM - 04:00 PM", slots:["09:00 AM","10:00 AM","11:00 AM","12:00 PM","02:00 PM"], img:"https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=200&h=200&fit=crop" },
+  { id:13,name:"Dr. Omar Javed",   spec:"Cardiologist",  rate:4.9, rev:95,  hosp:"Capital Heart Center",   city:"Islamabad",  addr:"F-10, Islamabad",                           exp:"13+ Years", fee:"Rs. 1,300", treats:["heart attack","cardiac","chest pain"], about:"Senior cardiologist for complex heart conditions and follow-up care.", timing:"Tuesday - Sunday | 02:00 PM - 07:00 PM", slots:["02:00 PM","03:00 PM","04:00 PM","05:00 PM","06:00 PM"], img:"https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=200&h=200&fit=crop" },
+  { id:14,name:"Dr. Hina Akram",  spec:"General Physician", rate:4.5, rev:48, hosp:"Family Health Clinic",   city:"Islamabad",  addr:"I-8, Islamabad",                            exp:"5+ Years",  fee:"Rs. 650",   treats:["fever","flu","checkup","weakness"], about:"Family physician for general illness and health screenings.", timing:"Monday - Saturday | 10:00 AM - 03:00 PM", slots:["10:00 AM","11:00 AM","12:00 PM","01:00 PM","02:00 PM"], img:"https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=200&h=200&fit=crop" },
+];
+
+/* symptom keywords → specialty hint for banner */
+const SYMPTOM_HINTS = [
+  { label: 'Headache / Migraine', keys: ['headache','migraine','head pain','head ache'], specs: ['Neurologist'] },
+  { label: 'Heart / Chest pain', keys: ['heart','heartattack','heart attack','chest pain','cardiac','angina'], specs: ['Cardiologist'] },
+  { label: 'Skin / Allergy', keys: ['skin','rash','acne','allergy','itch','eczema'], specs: ['Dermatologist'] },
+  { label: 'Bone / Joint pain', keys: ['bone','fracture','joint','knee','back pain','arthritis'], specs: ['Orthopedic'] },
+  { label: 'Child health', keys: ['child','baby','pediatric','infant','vaccination'], specs: ['Pediatrician'] },
+  { label: 'Fever / Flu', keys: ['fever','flu','cold','cough','infection'], specs: ['General Physician','Pediatrician'] },
+  { label: 'Eye / Vision', keys: ['eye','vision','cataract','red eye','blurry'], specs: ['Ophthalmologist'] },
+];
+
+const CITIES = ['Faisalabad', 'Lahore', 'Islamabad'];
+let activeSpec = 'all';
+let activeCity = 'all';
+let currentDoc = null;
+let bookedSlots = {};
+let lastSymptomSearch = null;
+let profileDocId = null;
+let pendingSymptomNote = '';
+let hbSelectedCity = '';
+let hbSelectedDocId = null;
+
+function docInitials(name) {
+  const parts = name.replace(/^Dr\.\s*/i, '').trim().split(/\s+/);
+  return parts.length >= 2
+    ? (parts[0][0] + parts[parts.length - 1][0]).toUpperCase()
+    : (parts[0]?.[0] || 'D').toUpperCase();
+}
+
+function normQ(s) {
+  return s.toLowerCase().trim().replace(/\s+/g, ' ');
+}
+
+function analyzeSymptom(query) {
+  if (!query) return null;
+  const q = normQ(query);
+  const qCompact = q.replace(/\s/g, '');
+
+  for (const hint of SYMPTOM_HINTS) {
+    if (hint.keys.some(k => q.includes(k) || qCompact.includes(k.replace(/\s/g, '')))) {
+      return { raw: query, label: hint.label, specs: hint.specs };
+    }
+  }
+  return { raw: query, label: query, specs: [] };
+}
+
+function doctorSymptomScore(doc, query, symptomInfo) {
+  if (!query) return 0;
+  const q = normQ(query);
+  const qCompact = q.replace(/\s/g, '');
+  let score = 0;
+
+  if (symptomInfo?.specs?.includes(doc.spec)) score += 10;
+  if (doc.treats?.some(t => q.includes(t) || qCompact.includes(t.replace(/\s/g, '')))) score += 8;
+  if (doc.about?.toLowerCase().includes(q)) score += 3;
+  if (doc.name.toLowerCase().includes(q) || doc.spec.toLowerCase().includes(q)) score += 2;
+  if (doc.city.toLowerCase().includes(q)) score += 1;
+  return score;
+}
+
+function getDocListWithScores() {
+  const q = normQ(document.getElementById('docSearch').value);
+  const symptomInfo = lastSymptomSearch || (q ? analyzeSymptom(q) : null);
+
+  const list = DOCS.map(d => {
+    let score = doctorSymptomScore(d, q, symptomInfo);
+    const passesFilter =
+      (activeSpec === 'all' || d.spec === activeSpec) &&
+      (activeCity === 'all' || d.city === activeCity);
+
+    if (!q && !lastSymptomSearch) {
+      return { doc: d, score: 0, match: false, show: passesFilter };
+    }
+
+    if (q || lastSymptomSearch) {
+      const textMatch =
+        !q ||
+        d.name.toLowerCase().includes(q) ||
+        d.spec.toLowerCase().includes(q) ||
+        d.city.toLowerCase().includes(q) ||
+        d.about.toLowerCase().includes(q) ||
+        d.treats?.some(t => q.includes(t));
+
+      const symptomMatch = score >= 8;
+      const show = passesFilter && (symptomMatch || textMatch || (symptomInfo && symptomInfo.specs.includes(d.spec)));
+      if (symptomInfo?.specs?.includes(d.spec) && !score) score = 5;
+      return { doc: d, score, match: score >= 8, show };
+    }
+    return { doc: d, score: 0, match: false, show: passesFilter };
+  }).filter(x => x.show);
+
+  list.sort((a, b) => b.score - a.score || b.doc.rate - a.doc.rate);
+  return { list, symptomInfo, query: q };
+}
+
+function updateSymptomBanner(symptomInfo, matchedCount, totalShown) {
+  const banner = document.getElementById('symptomBanner');
+  if (!symptomInfo || !lastSymptomSearch) {
+    banner.hidden = true;
+    return;
+  }
+  const matched = matchedCount;
+  document.getElementById('symptomBannerTitle').textContent =
+    `Doctors for “${symptomInfo.raw}”`;
+  document.getElementById('symptomBannerText').textContent =
+    matched
+      ? `${matched} specialist${matched > 1 ? 's' : ''} treat symptoms related to ${symptomInfo.label}. Cards marked “Recommended” are the best match.`
+      : `Showing ${totalShown} doctor${totalShown !== 1 ? 's' : ''} — try a nearby city or browse all specialties.`;
+  banner.hidden = false;
+}
+
+function clearSymptomSearch() {
+  lastSymptomSearch = null;
+  pendingSymptomNote = '';
+  document.getElementById('heroSearch').value = '';
+  document.getElementById('docSearch').value = '';
+  document.getElementById('symptomBanner').hidden = true;
+  activeSpec = 'all';
+  document.querySelectorAll('.spec-chip').forEach(c => c.classList.remove('on'));
+  const allChip = document.querySelector('.spec-chip[onclick*="setSpec(\'all\'"]');
+  if (allChip) allChip.classList.add('on');
+  filterDocs();
+}
+
+/* ── RENDER DOCTORS ── */
+function renderDocs(entries, symptomInfo) {
+  const grid = document.getElementById('docsGrid');
+  if (!entries.length) {
+    grid.innerHTML = '<p class="docs-empty">No doctors found. Try another city, specialty, or symptom keyword.</p>';
+    return;
+  }
+  grid.innerHTML = entries.map(({ doc: d, match, score }) => `
+    <div class="doc-card ${match ? 'symptom-match' : ''}">
+      ${match ? '<span class="match-badge">Recommended for your symptom</span>' : ''}
+      <div class="doc-ava" title="${d.name}">${docInitials(d.name)}</div>
+      <h3>${d.name}</h3>
+      <div class="spec">${d.spec}</div>
+      ${match && lastSymptomSearch ? `<p class="match-reason">Treats: ${lastSymptomSearch.label}</p>` : ''}
+      <div class="rating-row"><span class="star">★</span><strong>${d.rate}</strong><span>(${d.rev} reviews)</span></div>
+      <div class="hosp">${d.hosp}</div>
+      <div class="hosp">${d.city}</div>
+      <span class="fee-pill">Fee: ${d.fee}</span>
+      <div class="doc-card-btns">
+        <button class="btn btn-primary btn-sm" style="flex:1" onclick="openBooking(${d.id})">Book Now</button>
+        <button class="btn btn-outline btn-sm" style="flex:1" onclick="viewDoctorProfile(${d.id})">View Profile</button>
+      </div>
+    </div>`).join('');
+}
+
+function onDocSearchInput() {
+  const q = document.getElementById('docSearch').value.trim();
+  if (q) {
+    const a = analyzeSymptom(q);
+    if (a.specs.length) {
+      lastSymptomSearch = a;
+      pendingSymptomNote = q;
+      highlightSpecChip(a.specs[0]);
+    } else {
+      lastSymptomSearch = { raw: q, label: q, specs: [] };
+    }
+  } else {
+    lastSymptomSearch = null;
+    pendingSymptomNote = '';
+  }
+  filterDocs();
+}
+
+function filterDocs() {
+  const { list, symptomInfo } = getDocListWithScores();
+  const matched = list.filter(x => x.match).length;
+  updateSymptomBanner(lastSymptomSearch || symptomInfo, matched, list.length);
+  renderDocs(list, lastSymptomSearch || symptomInfo);
+}
+
+function setSpec(s, el) {
+  document.querySelectorAll('.spec-chip').forEach(c => c.classList.remove('on'));
+  if (el) el.classList.add('on');
+  activeSpec = s;
+  filterDocs();
+}
+
+function highlightSpecChip(spec) {
+  if (!spec || spec === 'all') return;
+  let found = false;
+  document.querySelectorAll('.spec-chip').forEach(chip => {
+    const on = (chip.getAttribute('onclick') || '').includes(`'${spec}'`);
+    chip.classList.toggle('on', on);
+    if (on) found = true;
+  });
+  if (found) activeSpec = spec;
+}
+
+function setCity(city, el) {
+  document.querySelectorAll('.city-chip').forEach(c => c.classList.remove('on'));
+  el.classList.add('on');
+  activeCity = city;
+  const sel = document.getElementById('heroCity');
+  if (sel) sel.value = city === 'all' ? '' : city;
+  filterDocs();
+}
+
+function docsByCity(city) {
+  return DOCS.filter(d => d.city === city);
+}
+
+function renderHbDoctorList(city) {
+  const list = docsByCity(city);
+  const box = document.getElementById('hbDoctorList');
+  document.getElementById('hbDoctorTitle').textContent = `Doctors in ${city} (${list.length})`;
+  if (!list.length) {
+    box.innerHTML = '<p class="pick-empty">No doctors in this city yet.</p>';
+    return;
+  }
+  box.innerHTML = list.map(d => `
+    <button type="button" class="pick-doc-item" onclick="selectHbDoctor(${d.id})">
+      <span class="pick-doc-ava">${docInitials(d.name)}</span>
+      <span class="pick-doc-info">
+        <strong>${d.name}</strong>
+        <span>${d.spec} · ${d.hosp}</span>
+        <span class="pick-fee">${d.fee}</span>
+      </span>
+      <span class="pick-arrow">Profile →</span>
+    </button>`).join('');
+}
+
+function renderHbProfile(id) {
+  const d = DOCS.find(x => x.id === id);
+  if (!d) return;
+  hbSelectedDocId = id;
+  document.getElementById('hbProfileContent').innerHTML = `
+    <div class="hb-profile-mini">
+      <div class="profile-ava">${docInitials(d.name)}</div>
+      <div>
+        <h3>${d.name}</h3>
+        <p class="profile-spec">${d.spec}</p>
+        <div class="rating-row"><span class="star">★</span><strong>${d.rate}</strong><span>(${d.rev} reviews)</span></div>
+      </div>
+    </div>
+    <div class="hb-profile-meta">
+      <p><span>Hospital</span><strong>${d.hosp}</strong></p>
+      <p><span>City</span><strong>${d.city}</strong></p>
+      <p><span>Fee</span><strong>${d.fee}</strong></p>
+      <p><span>Timing</span><strong>${d.timing}</strong></p>
+    </div>
+    <p class="hb-about">${d.about}</p>`;
+}
+
+function showHbStep(step) {
+  ['City','Doctors','Profile'].forEach(s => {
+    document.getElementById('hbStep' + s).classList.toggle('hb-hidden', s !== step);
+  });
+}
+
+function clearHeroCityError() {
+  const el = document.getElementById('heroCityError');
+  const sel = document.getElementById('heroCity');
+  el.textContent = '';
+  el.classList.remove('show');
+  sel.classList.remove('input-error');
+}
+
+function setHeroCityError(msg) {
+  const el = document.getElementById('heroCityError');
+  const sel = document.getElementById('heroCity');
+  el.textContent = msg;
+  el.classList.add('show');
+  sel.classList.add('input-error');
+  sel.focus();
+}
+
+function selectHbDoctor(id) {
+  renderHbProfile(id);
+  showHbStep('Profile');
+}
+
+function backHbDoctors() {
+  hbSelectedDocId = null;
+  showHbStep('Doctors');
+}
+
+function backHbCity() {
+  hbSelectedDocId = null;
+  hbSelectedCity = '';
+  showHbStep('City');
+}
+
+function bookFromHbProfile() {
+  if (!hbSelectedDocId) return;
+  openBooking(hbSelectedDocId);
+}
+
+function viewDoctorProfile(id) {
+  const d = DOCS.find(x => x.id === id);
+  if (!d) return;
+  profileDocId = id;
+
+  document.getElementById('profileBody').innerHTML = `
+    <div class="profile-header">
+      <div class="profile-ava">${docInitials(d.name)}</div>
+      <div>
+        <h2 id="profileName">${d.name}</h2>
+        <p class="profile-spec">${d.spec}</p>
+        <div class="rating-row"><span class="star">★</span><strong>${d.rate}</strong><span>(${d.rev} reviews)</span></div>
+      </div>
+    </div>
+    <div class="profile-details">
+      <div class="profile-row"><span>Hospital</span><strong>${d.hosp}</strong></div>
+      <div class="profile-row"><span>City</span><strong>${d.city}</strong></div>
+      <div class="profile-row"><span>Address</span><strong>${d.addr}</strong></div>
+      <div class="profile-row"><span>Experience</span><strong>${d.exp}</strong></div>
+      <div class="profile-row"><span>Consultation fee</span><strong>${d.fee}</strong></div>
+      <div class="profile-row"><span>Timing</span><strong>${d.timing}</strong></div>
+    </div>
+    <div class="profile-about">
+      <h4>About</h4>
+      <p>${d.about}</p>
+    </div>
+    <div class="profile-treats">
+      <h4>Common symptoms treated</h4>
+      <div class="profile-tags">${(d.treats || []).slice(0, 6).map(t => `<span>${t}</span>`).join('')}</div>
+    </div>`;
+
+  document.getElementById('profileOv').classList.add('show');
+}
+
+function closeProfile() {
+  document.getElementById('profileOv').classList.remove('show');
+  profileDocId = null;
+}
+
+function bookFromProfile() {
+  const id = profileDocId;
+  closeProfile();
+  if (id) openBooking(id);
+}
+
+function closeCityModal() {
+  const ov = document.getElementById('cityDoctorOv');
+  if (ov) ov.classList.remove('show');
+}
+
+function startHeroBooking() {
+  clearHeroCityError();
+  const city = document.getElementById('heroCity').value;
+  if (!city) {
+    setHeroCityError('Please select your city first.');
+    return;
+  }
+  hbSelectedCity = city;
+  activeCity = city;
+  document.querySelectorAll('.city-chip').forEach(c => {
+    c.classList.toggle('on', c.dataset.city === city);
+  });
+  renderHbDoctorList(city);
+  showHbStep('Doctors');
+  filterDocs();
+}
+
+/* ── BOOKING FLOW ── */
+function openBooking(id) {
+  currentDoc = DOCS.find(d => d.id === id);
+  if (!currentDoc) return;
+  closeProfile();
+  closeCityModal();
+
+  // Fill doctor info
+  document.getElementById('b-emo').textContent  = docInitials(currentDoc.name);
+  document.getElementById('b-name').textContent = currentDoc.name;
+  document.getElementById('b-spec').textContent = currentDoc.spec;
+  document.getElementById('b-rate').textContent = currentDoc.rate;
+  document.getElementById('b-rev').textContent  = `(${currentDoc.rev} Reviews)`;
+  document.getElementById('b-hosp').textContent = currentDoc.hosp;
+  document.getElementById('b-addr').textContent = currentDoc.addr;
+  document.getElementById('b-city').textContent = currentDoc.city;
+  document.getElementById('b-exp').textContent  = currentDoc.exp;
+  document.getElementById('b-fee').textContent  = currentDoc.fee;
+  document.getElementById('b-about').textContent= currentDoc.about;
+  document.getElementById('b-time').textContent = currentDoc.timing;
+  document.getElementById('bk-title').textContent = `Choose an Appointment Time with ${currentDoc.name}`;
+
+  // Reset
+  document.getElementById('bkDate').value = '';
+  document.getElementById('pickedSlot').value = '';
+  document.getElementById('slotsGrid').innerHTML = '<p style="color:var(--muted);font-size:0.88rem;">Please select a date first</p>';
+  document.getElementById('slotLeg').style.display = 'none';
+  document.getElementById('bkDate').min = new Date().toISOString().split('T')[0];
+
+  const sympEl = document.getElementById('pSymp');
+  if (sympEl && pendingSymptomNote && !sympEl.value.trim()) {
+    sympEl.value = pendingSymptomNote;
+  }
+
+  // Show booking section, hide doctors
+  document.getElementById('doctors').style.display = 'none';
+  document.getElementById('booking').style.display = 'block';
+  goStep(1);
+  document.getElementById('booking').scrollIntoView({ behavior: 'smooth' });
+}
+
+function closeBooking() {
+  document.getElementById('booking').style.display = 'none';
+  document.getElementById('doctors').style.display = 'block';
+  showHbStep('City');
+  hbSelectedDocId = null;
+  document.getElementById('doctors').scrollIntoView({ behavior: 'smooth' });
+}
+
+function loadSlots() {
+  const date = document.getElementById('bkDate').value;
+  if (!date || !currentDoc) return;
+  const booked = (bookedSlots[`${currentDoc.id}_${date}`] || []);
+  document.getElementById('pickedSlot').value = '';
+  document.getElementById('slotLeg').style.display = 'flex';
+  document.getElementById('slotsGrid').innerHTML = currentDoc.slots.map(s => {
+    const isB = booked.includes(s);
+    return `<div class="slot ${isB?'booked':''}" ${!isB?`onclick="pickSlot(this,'${s}')"`:''}>${s}</div>`;
+  }).join('');
+}
+
+function pickSlot(el, slot) {
+  document.querySelectorAll('.slot').forEach(s => s.classList.remove('picked'));
+  el.classList.add('picked');
+  document.getElementById('pickedSlot').value = slot;
+}
+
+function showBkAlert(msg) {
+  const al = document.getElementById('bkAlert');
+  if (!al) { alert(msg); return; }
+  al.className = 'alert err';
+  al.textContent = msg;
+}
+
+function goStep(n) {
+  [1,2].forEach(i => {
+    document.getElementById(`bp${i}`).classList.toggle('on', i === n);
+  });
+  [1,2,3].forEach(i => {
+    const el = document.getElementById(`si${i}`);
+    el.classList.remove('active','done');
+    if (i < n) el.classList.add('done');
+    if (i === n) el.classList.add('active');
+  });
+  [1,2].forEach(i => {
+    document.getElementById(`sl${i}`).classList.toggle('done', i < n);
+  });
+  window.scrollTo(0, document.getElementById('booking').offsetTop - 70);
+
+  if (n === 2) {
+    const date = document.getElementById('bkDate').value;
+    const slot = document.getElementById('pickedSlot').value;
+    if (!date) { showBkAlert('Please select a date.'); goStep(1); return; }
+    if (!slot) { showBkAlert('Please select a time slot.'); goStep(1); return; }
+
+    document.getElementById('s2name').textContent = currentDoc.name;
+    document.getElementById('s-doc').textContent  = currentDoc.name;
+    document.getElementById('s-spec').textContent = currentDoc.spec;
+    document.getElementById('s-hosp').textContent = currentDoc.hosp;
+    document.getElementById('s-date').textContent = new Date(date).toLocaleDateString('en-PK',{weekday:'short',year:'numeric',month:'short',day:'numeric'});
+    document.getElementById('s-time').textContent = slot;
+    document.getElementById('s-fee').textContent  = currentDoc.fee;
+  }
+}
+
+async function submitBooking() {
+  const al = document.getElementById('fAlert');
+  al.className = 'alert';
+  const name  = document.getElementById('pName').value.trim();
+  const email = document.getElementById('pEmail').value.trim();
+  const phone = document.getElementById('pPhone').value.trim();
+  const symp  = document.getElementById('pSymp').value.trim();
+  const date  = document.getElementById('bkDate').value;
+  const slot  = document.getElementById('pickedSlot').value;
+
+  if (!name||!email||!phone) { al.className='alert err'; al.textContent='⚠️ Please fill Name, Email and Phone.'; return; }
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { al.className='alert err'; al.textContent='⚠️ Please enter a valid email.'; return; }
+
+  const btn = document.getElementById('confBtn');
+  btn.disabled = true; btn.innerHTML = '<span class="spinner"></span> Confirming...';
+
+  const fd = new FormData();
+  fd.append('patient_name',name); fd.append('email',email); fd.append('phone',phone);
+  fd.append('record',symp); fd.append('appointment_date',date);
+  fd.append('appointment_time',slot); fd.append('doctor_id',currentDoc.id);
+
+  try {
+    const res  = await fetch('book_appointment.php', { method:'POST', body:fd });
+    const data = await res.json();
+    if (data.success) {
+      const key = `${currentDoc.id}_${date}`;
+      if (!bookedSlots[key]) bookedSlots[key] = [];
+      bookedSlots[key].push(slot);
+      showModal(name, date, slot);
+    } else {
+      al.className = 'alert err';
+      al.textContent = '❌ ' + (data.message || 'Something went wrong.');
+    }
+  } catch {
+    al.className = 'alert err';
+    al.textContent = '⚠️ Server se connect nahi ho saka. XAMPP + PHP setup karein.';
+  }
+  btn.disabled = false; btn.innerHTML = 'Confirm Appointment';
+}
+
+function showModal(name, date, slot) {
+  const fmt = new Date(date).toLocaleDateString('en-PK',{weekday:'long',year:'numeric',month:'long',day:'numeric'});
+  document.getElementById('modalDet').innerHTML =
+    `<div style="font-size:0.82rem;line-height:2;">
+      <b style="color:var(--primary);">Doctor:</b> ${currentDoc.name}<br>
+      <b style="color:var(--primary);">Specialty:</b> ${currentDoc.spec}<br>
+      <b style="color:var(--primary);">Patient:</b> ${name}<br>
+      <b style="color:var(--primary);">Date:</b> ${fmt}<br>
+      <b style="color:var(--primary);">Time:</b> ${slot}<br>
+      <b style="color:var(--primary);">Hospital:</b> ${currentDoc.hosp}<br>
+      <b style="color:var(--primary);">Fee:</b> ${currentDoc.fee}
+    </div>`;
+  // Populate other available doctors (same specialty, different doctor)
+  const otherDocs = DOCS.filter(d => d.id !== currentDoc.id && d.spec === currentDoc.spec).slice(0,3);
+  const allOthers = otherDocs.length ? otherDocs : DOCS.filter(d=>d.id!==currentDoc.id).slice(0,3);
+  const list = document.getElementById('successDocList');
+  list.innerHTML = allOthers.map(d => `
+    <div class="success-doc-item" onclick="bookDoc(${d.id})">
+      <div class="success-doc-av">${docInitials(d.name)}</div>
+      <div class="success-doc-info">
+        <strong>${d.name}</strong>
+        <span>${d.spec} · ${d.city}</span>
+      </div>
+      <button class="success-doc-book" onclick="event.stopPropagation();bookDoc(${d.id})">Book</button>
+    </div>`).join('');
+  document.getElementById('successOv').classList.add('show');
+}
+function closeModal() {
+  document.getElementById('successOv').classList.remove('show');
+  closeBooking();
+  ['pName','pEmail','pPhone','pSymp'].forEach(i => document.getElementById(i).value = '');
+}
+
+/* ── AI CHATBOT ── */
+async function sendChat() {
+  const inp = document.getElementById('chatIn');
+  const msg = inp.value.trim();
+  if (!msg) return;
+  inp.value = '';
+  addMsg(msg, 'user');
+  const chips = document.querySelector('.hero-chatbot .quick-chips') || document.querySelector('.quick-chips');
+  if (chips) chips.style.display = 'none';
+  showTyping();
+  try {
+    const res  = await fetch('chatbot.php', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({message:msg}) });
+    const data = await res.json();
+    removeTyping();
+    addMsg(data.reply || 'Sorry, please try again.', 'bot', data.emergency);
+  } catch {
+    removeTyping();
+    addMsg('Health assistant is offline. For emergency call 1122. You can still book a doctor using Appointment Booking.', 'bot', true);
+  }
+}
+function quickChat(q) { document.getElementById('chatIn').value = q; sendChat(); }
+function addMsg(t, type, isEmergency) {
+  const box = document.getElementById('chatBox');
+  const div = document.createElement('div');
+  div.className = `chat-msg ${type}${isEmergency ? ' emergency' : ''}`;
+  div.textContent = t;
+  box.appendChild(div);
+  box.scrollTop = box.scrollHeight;
+}
+function showTyping() {
+  const box = document.getElementById('chatBox');
+  const d = document.createElement('div');
+  d.className = 'typing'; d.id = 'typ';
+  d.innerHTML = '<span></span><span></span><span></span>';
+  box.appendChild(d); box.scrollTop = box.scrollHeight;
+}
+function removeTyping() { const d = document.getElementById('typ'); if(d) d.remove(); }
+
+/* ── CONTACT FORM ── */
+async function sendContact() {
+  const al = document.getElementById('ctAlert');
+  al.className = 'alert';
+  const name = document.getElementById('ctName').value.trim();
+  const email = document.getElementById('ctEmail').value.trim();
+  const msg   = document.getElementById('ctMsg').value.trim();
+  if (!name||!email||!msg) { al.className='alert err'; al.textContent='⚠️ Please fill all fields.'; return; }
+  // In real use connect to contact.php
+  al.className = 'alert ok';
+  al.textContent = '✅ Message sent! We will get back to you soon.';
+  document.getElementById('ctName').value='';
+  document.getElementById('ctEmail').value='';
+  document.getElementById('ctMsg').value='';
+}
+
+/* ── HERO SEARCH ── */
+function heroSearchGo() {
+  const q = document.getElementById('heroSearch').value.trim();
+  if (!q) {
+    document.getElementById('doctors').scrollIntoView({ behavior: 'smooth' });
+    return;
+  }
+  document.getElementById('docSearch').value = q;
+  lastSymptomSearch = analyzeSymptom(q);
+  pendingSymptomNote = q;
+  activeCity = 'all';
+  document.querySelectorAll('.city-chip').forEach(c => {
+    c.classList.toggle('on', c.dataset.city === 'all');
+  });
+  if (lastSymptomSearch?.specs?.length) {
+    highlightSpecChip(lastSymptomSearch.specs[0]);
+  } else {
+    activeSpec = 'all';
+    document.querySelectorAll('.spec-chip').forEach(c => c.classList.remove('on'));
+    const allChip = document.querySelector('.spec-chip[onclick*="setSpec(\'all\'"]');
+    if (allChip) allChip.classList.add('on');
+  }
+  filterDocs();
+  document.getElementById('doctors').scrollIntoView({ behavior: 'smooth' });
+}
+
+/* ── NAVBAR ── */
+function setNav(el) {
+  document.querySelectorAll('.nav-links a').forEach(a => a.classList.remove('active'));
+  el.classList.add('active');
+}
+function toggleMenu() {
+  const nav = document.getElementById('mobileNav');
+  const open = nav.classList.toggle('show');
+  const btn = document.getElementById('menuBtn');
+  if (btn) btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+}
+function closeMob() {
+  document.getElementById('mobileNav').classList.remove('show');
+  const btn = document.getElementById('menuBtn');
+  if (btn) btn.setAttribute('aria-expanded', 'false');
+}
+function scrollTo(id, chatFocus) {
+  document.querySelector(id).scrollIntoView({ behavior:'smooth' });
+  if (chatFocus) setTimeout(() => document.getElementById('chatIn').focus(), 600);
+}
+
+/* ── ACTIVE NAV ON SCROLL ── */
+const sections = ['home','about','services','doctors','contact'];
+window.addEventListener('scroll', () => {
+  let cur = 'home';
+  sections.forEach(id => {
+    const el = document.getElementById(id);
+    if (el && el.offsetTop - 100 <= window.scrollY) cur = id;
+  });
+  document.querySelectorAll('.nav-links a').forEach(a => {
+    a.classList.toggle('active', a.getAttribute('href') === `#${cur}`);
+  });
+});
+
+/* ── INIT ── */
+filterDocs();
+</script>
+</body>
+</html>

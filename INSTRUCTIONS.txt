@@ -1,0 +1,238 @@
+====================================================
+  TELECARE WEBSITE - COMPLETE SETUP GUIDE
+  Step by Step Instructions (Roman Urdu + English)
+====================================================
+
+📁 AAPKE PAAS YEH FILES HONI CHAHIYE:
+--------------------------------------
+telecare/
+├── index.html         ← Home Page (chatbot ke sath)
+├── doctors.html       ← Doctors List Page
+├── booking.html       ← Appointment Booking Page (3 steps)
+├── login.html         ← Login / Sign Up Page
+├── style.css          ← Poori website ki styling
+├── book_appointment.php ← Booking ka PHP backend
+├── auth.php           ← Login/Signup ka PHP backend
+├── chatbot.php        ← AI Chatbot ka PHP backend
+└── database.sql       ← MySQL database setup
+
+====================================================
+  STEP 1 — XAMPP INSTALL KAREIN (agar nahi hai)
+====================================================
+
+1. Browser mein jao: https://www.apachefriends.org
+2. "Download" button dabao — Windows version download hoga
+3. Download hone ke baad .exe file run karein
+4. Installation wizard mein bas "Next" dabate jao
+5. Default folder C:\xampp\ pe install hone do
+6. Install ho jane ke baad "Finish" karein
+
+====================================================
+  STEP 2 — XAMPP START KAREIN
+====================================================
+
+1. Desktop pe "XAMPP Control Panel" icon dhundo
+   (ya Start menu mein search karein "XAMPP")
+2. XAMPP Control Panel khulega
+3. "Apache" ke saamne "Start" button dabao → Green ho jaye ga
+4. "MySQL" ke saamne "Start" button dabao → Green ho jaye ga
+5. Dono green ho jayen to XAMPP ready hai ✅
+
+====================================================
+  STEP 3 — WEBSITE FOLDER BANAO
+====================================================
+
+1. File Explorer kholo
+2. Address bar mein type karein:
+   C:\xampp\htdocs
+   (Enter dabao)
+3. Wahan right click karein → "New" → "Folder"
+4. Naam rakho: telecare
+5. Ab saari files us folder mein copy karein:
+   C:\xampp\htdocs\telecare\
+   (index.html, doctors.html, booking.html, login.html,
+    style.css, book_appointment.php, auth.php,
+    chatbot.php, database.sql — sab yahan aayenge)
+
+====================================================
+  STEP 4 — DATABASE BANAO
+====================================================
+
+1. Browser mein jao:
+   http://localhost/phpmyadmin
+
+2. Upar menu mein "SQL" tab click karein
+
+3. "database.sql" file ko Notepad mein kholo
+   (Right click → Open with → Notepad)
+
+4. Notepad se poora text select karein (Ctrl+A)
+   aur copy karein (Ctrl+C)
+
+5. phpMyAdmin ke SQL box mein paste karein (Ctrl+V)
+
+6. Neecha "Go" button dabao
+
+7. "telecare_db" database ban jayega with tables ✅
+
+====================================================
+  STEP 5 — WEBSITE KHOLO
+====================================================
+
+Browser mein type karein:
+   http://localhost/telecare/index.html
+
+WEBSITE CHAL JAYEGI! 🎉
+
+====================================================
+  STEP 6 — AI CHATBOT SETUP (Optional)
+====================================================
+
+Chatbot ke liye Claude AI API key chahiye hoti hai.
+
+1. Jao: https://console.anthropic.com
+2. Account banao (free hai sign up)
+3. "API Keys" section mein "Create Key" karein
+4. Key copy karein
+
+5. "chatbot.php" file Notepad mein kholo
+6. Yeh line dhundo:
+   $api_key = "YOUR_ANTHROPIC_API_KEY_HERE";
+7. YOUR_ANTHROPIC_API_KEY_HERE ki jagah apni key paste karein
+8. File save karein
+
+AB CHATBOT KAM KAREGA ✅
+
+====================================================
+  FILE KA KAAM KYA HAI?
+====================================================
+
+index.html         → Home page — hero section + AI chatbot
+doctors.html       → Doctors list — search, filter by specialty/city
+booking.html       → 3-step booking:
+                     Step 1: Doctor detail + time slot select
+                     Step 2: Patient form bhari
+                     Step 3: Confirm
+login.html         → User login aur signup
+style.css          → Poori website ki TeleCare color theme
+book_appointment.php → Appointment data MySQL mein save karta hai
+auth.php           → User login/signup handle karta hai
+chatbot.php        → AI se bat karta hai aur jawab laata hai
+database.sql       → Database aur tables banata hai
+
+====================================================
+  WEBSITE PAGES KA FLOW
+====================================================
+
+Home Page (index.html)
+    ↓ "Book Appointment" ya "Doctors" button
+Doctors Page (doctors.html)
+    ↓ "Book Now" button
+Booking Page (booking.html)
+    ↓ Step 1: Date + Time slot chunein
+    ↓ Step 2: Name, Email, Phone bharein
+    ↓ "Confirm Appointment" button
+SUCCESS MODAL ✅
+
+====================================================
+  COMMON PROBLEMS & SOLUTIONS
+====================================================
+
+Problem: Page nahi khul raha
+Solution: XAMPP mein Apache green hai? Check karein
+
+Problem: "Database connection failed"
+Solution:
+- MySQL start hai XAMPP mein?
+- database.sql run kiya phpMyAdmin mein?
+
+Problem: Chatbot jawab nahi de raha
+Solution:
+- chatbot.php mein API key daali hai?
+- API key sahi hai console.anthropic.com se?
+
+Problem: Booking save nahi ho rahi
+Solution:
+- MySQL running hai?
+- appointments table bana hai? (database.sql chalaein)
+
+====================================================
+  DATABASE MEIN DATA KAISE DEKHEIN?
+====================================================
+
+1. http://localhost/phpmyadmin jao
+2. Left side mein "telecare_db" click karein
+3. "appointments" table click karein
+4. "Browse" tab — sab bookings dikhengi
+
+====================================================
+  COLORS USED (TeleCare Theme)
+====================================================
+
+Primary Teal:  #0d7a6e
+Dark Teal:     #095f55
+Light Teal:    #e6f4f3
+Background:    #f5faf9
+Text:          #1a2e2b
+Muted:         #5a7370
+
+====================================================
+  SUPPORT
+====================================================
+
+Koi masla ho to Claude.ai pe poochho!
+"TeleCare website mein [problem] aa rahi hai"
+====================================================
+
+====================================================
+  NEW ADDITIONS — VIDEO CONSULTATION FEATURE
+====================================================
+
+📁 NEW FILES ADDED:
+-------------------
+video_consult.html         ← Video Consultation main page
+video_consult_backend.php  ← PHP backend for video booking
+
+====================================================
+  VIDEO CONSULT SETUP
+====================================================
+
+1. Copy telecare/ folder to C:\xampp\htdocs\
+2. Open http://localhost/phpmyadmin
+3. Run the NEW database.sql (includes video_consultations table)
+4. Open: http://localhost/telecare/video_consult.html
+
+Features:
+✅ Real-time availability status (Available / In Session / Offline)
+✅ Time slot booking with duplicate check
+✅ Google Meet link auto-generated
+✅ Availability filters (Available Now / In Session)
+✅ Doctor profile view
+
+====================================================
+  CHANGES TO EXISTING FILES
+====================================================
+
+index.html:
+  - Appointment success modal now shows doctor list
+  - Video Consult link added to navbar
+  - Better glassmorphism styling (Sora + Nunito fonts)
+  - Features bar updated with Video Consult feature
+
+style.css:
+  - Complete redesign: Sora + Nunito fonts
+  - Advanced glassmorphism effects
+  - New success modal styles with doctor list
+  - All existing pages keep same CSS variables
+
+database.sql:
+  - NEW: video_consultations table added at end
+
+====================================================
+  COLORS (Same as before, enhanced)
+====================================================
+
+Primary:     #14b88a (Emerald)
+Dark:        #0a3d35 (Deep Teal)
+Accent:      #0fd49e
+Light:       #a7f3d0 (Mint)

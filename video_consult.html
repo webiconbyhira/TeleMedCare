@@ -1,0 +1,756 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TeleCare — Video Consultation</title>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&family=Nunito:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+<style>
+/* ── VIDEO CONSULT PAGE STYLES ── */
+.vc-hero {
+  background: linear-gradient(145deg, #062e28 0%, #0a3d35 45%, #0f6b53 100%);
+  padding: calc(var(--nav-h) + 40px) clamp(14px,4%,28px) 56px;
+  text-align: center; position: relative; overflow: hidden;
+}
+.vc-hero::before {
+  content:''; position:absolute; inset:0;
+  background: radial-gradient(ellipse 60% 70% at 50% 50%, rgba(167,243,208,0.15), transparent 65%);
+  pointer-events:none;
+}
+.vc-hero-badge {
+  display: inline-flex; align-items: center; gap: 8px;
+  background: rgba(20,184,138,0.2); border: 1px solid rgba(20,184,138,0.4);
+  color: var(--light-green); padding: 6px 16px; border-radius: 999px;
+  font-size: 0.74rem; font-weight: 800; margin-bottom: 18px;
+  text-transform: uppercase; letter-spacing: 0.06em;
+  position: relative;
+}
+.vc-live-dot {
+  width: 8px; height: 8px; border-radius: 50%;
+  background: #22c55e; box-shadow: 0 0 8px #22c55e;
+  animation: pulse 1.5s infinite;
+}
+.vc-hero h1 {
+  font-family: 'Sora', sans-serif; font-size: clamp(2rem,4.5vw,3.2rem);
+  color: white; font-weight: 800; line-height: 1.1; margin-bottom: 14px;
+  letter-spacing: -0.03em; position: relative;
+}
+.vc-hero h1 span { color: var(--light-green); }
+.vc-hero p { color: rgba(255,255,255,0.75); font-size: 1rem; max-width: 560px; margin: 0 auto 32px; line-height: 1.65; position: relative; }
+.vc-hero-stats {
+  display: flex; justify-content: center; gap: 32px; flex-wrap: wrap;
+  position: relative;
+}
+.vc-stat { text-align: center; }
+.vc-stat .num { font-family:'Sora',sans-serif; font-size: 1.8rem; font-weight: 800; color: var(--light-green); }
+.vc-stat .lbl { font-size: 0.76rem; color: rgba(255,255,255,0.6); margin-top: 2px; }
+
+/* ── HOW IT WORKS ── */
+.vc-how { background: var(--bg); }
+.vc-steps-row {
+  display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px;
+  margin-top: 32px;
+}
+.vc-step-card {
+  background: white; border: 1.5px solid var(--border);
+  border-radius: var(--radius-lg); padding: 22px 18px; text-align: center;
+  position: relative; transition: all 0.3s;
+  box-shadow: var(--shadow-sm);
+}
+.vc-step-card:hover { transform: translateY(-5px); box-shadow: var(--shadow-lg); border-color: var(--primary); }
+.vc-step-num {
+  position: absolute; top: -14px; left: 50%; transform: translateX(-50%);
+  width: 28px; height: 28px; border-radius: 50%;
+  background: linear-gradient(135deg, var(--primary), var(--accent));
+  color: white; font-family: 'Sora', sans-serif; font-size: 0.8rem; font-weight: 800;
+  display: flex; align-items: center; justify-content: center;
+  box-shadow: 0 3px 10px rgba(20,184,138,0.4);
+}
+.vc-step-icon { font-size: 2.2rem; margin: 12px 0 10px; display: block; }
+.vc-step-card h4 { font-family: 'Sora', sans-serif; font-size: 0.9rem; font-weight: 800; color: var(--dark); margin-bottom: 6px; }
+.vc-step-card p { font-size: 0.78rem; color: var(--muted); line-height: 1.6; }
+
+/* ── AVAILABILITY STATUS LEGEND ── */
+.avail-legend {
+  display: flex; gap: 16px; flex-wrap: wrap;
+  margin-bottom: 20px; align-items: center;
+}
+.avail-pill {
+  display: flex; align-items: center; gap: 7px;
+  padding: 5px 13px; border-radius: 999px;
+  font-size: 0.75rem; font-weight: 700;
+  border: 1.5px solid;
+}
+.avail-pill.available { background: #ecfdf5; border-color: #a7f3d0; color: #065f46; }
+.avail-pill.busy { background: #fef9ec; border-color: #fde68a; color: #92400e; }
+.avail-pill.offline { background: #f9f9f9; border-color: #e5e7eb; color: #6b7280; }
+.avail-dot { width: 8px; height: 8px; border-radius: 50%; }
+.avail-dot.green { background: #22c55e; box-shadow: 0 0 6px #22c55e; }
+.avail-dot.yellow { background: #f59e0b; }
+.avail-dot.gray { background: #9ca3af; }
+
+/* ── DOCTOR CARDS FOR VIDEO ── */
+.vc-docs-grid {
+  display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px;
+}
+
+.vc-doc-card {
+  background: white; border: 1.5px solid var(--border);
+  border-radius: var(--radius-lg); overflow: hidden;
+  box-shadow: var(--shadow-sm); transition: all 0.3s;
+}
+.vc-doc-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-lg); border-color: var(--primary); }
+
+.vc-doc-top {
+  padding: 18px 16px 14px;
+  background: linear-gradient(145deg, var(--pale), white);
+  display: flex; align-items: flex-start; gap: 12px; position: relative;
+}
+.vc-avail-badge {
+  position: absolute; top: 12px; right: 12px;
+  display: flex; align-items: center; gap: 5px;
+  padding: 4px 10px; border-radius: 999px; font-size: 0.68rem; font-weight: 800;
+  border: 1.5px solid;
+}
+.vc-avail-badge.avail { background: #ecfdf5; border-color: #a7f3d0; color: #065f46; }
+.vc-avail-badge.busy { background: #fef9ec; border-color: #fde68a; color: #92400e; }
+.vc-avail-badge.offline { background: #f3f4f6; border-color: #e5e7eb; color: #6b7280; }
+.vc-avail-badge .dot { width: 6px; height: 6px; border-radius: 50%; }
+.vc-avail-badge.avail .dot { background: #22c55e; animation: pulse 1.5s infinite; }
+.vc-avail-badge.busy .dot { background: #f59e0b; }
+.vc-avail-badge.offline .dot { background: #9ca3af; }
+
+.vc-doc-av {
+  width: 54px; height: 54px; border-radius: 14px;
+  background: linear-gradient(135deg, var(--dark), #0f5c4a);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 0.9rem; font-weight: 800; color: white; flex-shrink: 0;
+  box-shadow: 0 4px 14px rgba(10,61,53,0.25);
+}
+.vc-doc-info .doc-name { font-family: 'Sora', sans-serif; font-size: 0.9rem; font-weight: 800; color: var(--dark); }
+.vc-doc-info .doc-spec { margin-top: 4px; }
+.vc-doc-body { padding: 12px 16px; }
+.vc-doc-meta { font-size: 0.76rem; color: var(--muted); display: flex; flex-direction: column; gap: 5px; margin-bottom: 10px; }
+.vc-doc-meta span { display: flex; align-items: center; gap: 6px; }
+.vc-next-slot {
+  background: var(--bg); border: 1.5px solid var(--border);
+  border-radius: 9px; padding: 9px 12px; font-size: 0.78rem;
+  margin-bottom: 14px;
+}
+.vc-next-slot strong { color: var(--dark); font-weight: 700; display: block; margin-bottom: 3px; }
+.vc-next-slot span { color: var(--muted); }
+.vc-next-slot.available strong { color: #065f46; }
+.vc-next-slot.busy strong { color: #92400e; }
+
+.vc-card-btns { display: flex; gap: 8px; padding: 0 16px 16px; }
+.vc-card-btns .btn { flex: 1; font-size: 0.8rem; padding: 9px 10px; }
+.btn-video {
+  background: linear-gradient(135deg, #059669, #10b981) !important;
+  box-shadow: 0 3px 12px rgba(5,150,105,0.35) !important;
+}
+.btn-video:hover { box-shadow: 0 5px 18px rgba(5,150,105,0.5) !important; }
+.btn-video:disabled { background: #e5e7eb !important; color: #9ca3af !important; box-shadow: none !important; cursor: not-allowed; }
+
+/* ── VIDEO CALL MODAL ── */
+.vc-modal-overlay {
+  display: none; position: fixed; inset: 0;
+  background: rgba(0,0,0,0.7); z-index: 99999;
+  align-items: center; justify-content: center; padding: 16px;
+  backdrop-filter: blur(6px);
+}
+.vc-modal-overlay.show { display: flex; }
+
+.vc-modal {
+  background: white; border-radius: 22px;
+  padding: 0; max-width: 500px; width: 100%;
+  box-shadow: 0 24px 80px rgba(0,0,0,0.35);
+  animation: pop 0.3s cubic-bezier(0.34,1.56,0.64,1);
+  overflow: hidden;
+}
+.vc-modal-head {
+  background: linear-gradient(135deg, var(--dark), #0f5c4a);
+  padding: 22px 22px 20px; display: flex; align-items: flex-start; gap: 14px;
+  position: relative;
+}
+.vc-modal-close {
+  position: absolute; top: 14px; right: 14px;
+  width: 30px; height: 30px; border-radius: 50%;
+  background: rgba(255,255,255,0.15); border: none; color: white;
+  font-size: 1.3rem; cursor: pointer; display: flex; align-items: center; justify-content: center;
+}
+.vc-modal-close:hover { background: rgba(255,255,255,0.25); }
+.vc-modal-doc-av {
+  width: 56px; height: 56px; border-radius: 14px;
+  background: rgba(255,255,255,0.15);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1rem; font-weight: 800; color: white; flex-shrink: 0;
+  border: 2px solid rgba(255,255,255,0.25);
+}
+.vc-modal-head h3 { font-family: 'Sora', sans-serif; color: white; font-size: 1.1rem; font-weight: 800; margin-bottom: 4px; }
+.vc-modal-head p { color: rgba(255,255,255,0.7); font-size: 0.82rem; }
+.vc-modal-status {
+  display: inline-flex; align-items: center; gap: 6px;
+  background: rgba(255,255,255,0.12); padding: 4px 12px;
+  border-radius: 999px; font-size: 0.72rem; font-weight: 700; color: white;
+  margin-top: 8px; border: 1px solid rgba(255,255,255,0.2);
+}
+
+.vc-modal-body { padding: 22px; }
+.vc-modal-body h4 { font-family: 'Sora', sans-serif; font-size: 0.9rem; font-weight: 800; color: var(--dark); margin-bottom: 14px; }
+.vc-slots-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 18px; }
+.vc-slot-btn {
+  padding: 10px 6px; border-radius: 10px; text-align: center;
+  font-size: 0.76rem; font-weight: 700; cursor: pointer;
+  border: 1.5px solid var(--border); background: white;
+  transition: all 0.2s; font-family: 'Nunito', sans-serif;
+}
+.vc-slot-btn:hover:not(.taken) { border-color: var(--primary); color: var(--primary); background: var(--pale); }
+.vc-slot-btn.selected { background: var(--primary); border-color: var(--primary); color: white; box-shadow: 0 3px 10px rgba(20,184,138,0.35); }
+.vc-slot-btn.taken { background: #f3f4f6; color: #9ca3af; cursor: not-allowed; text-decoration: line-through; }
+
+.vc-confirm-btn {
+  width: 100%; padding: 13px; border-radius: 12px;
+  background: linear-gradient(135deg, var(--primary), var(--accent));
+  color: white; border: none; font-size: 0.9rem; font-weight: 800;
+  cursor: pointer; font-family: 'Nunito', sans-serif;
+  box-shadow: 0 4px 16px rgba(20,184,138,0.4);
+  transition: all 0.25s;
+}
+.vc-confirm-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(20,184,138,0.5); }
+.vc-confirm-btn:disabled { background: #e5e7eb; color: #9ca3af; box-shadow: none; cursor: not-allowed; transform: none; }
+
+/* ── WAITING ROOM ── */
+.vc-waiting {
+  text-align: center; padding: 28px 22px;
+}
+.vc-waiting-anim {
+  width: 80px; height: 80px; margin: 0 auto 18px;
+  border-radius: 50%; border: 3px solid rgba(20,184,138,0.2);
+  border-top-color: var(--primary);
+  animation: spin 1.2s linear infinite;
+  position: relative;
+  display: flex; align-items: center; justify-content: center;
+}
+.vc-waiting-anim::after {
+  content: '📹'; font-size: 1.6rem;
+  animation: spin 1.2s linear infinite reverse;
+}
+.vc-waiting h3 { font-family: 'Sora', sans-serif; font-size: 1.1rem; font-weight: 800; color: var(--dark); margin-bottom: 8px; }
+.vc-waiting p { font-size: 0.84rem; color: var(--muted); line-height: 1.65; }
+.vc-est-time {
+  display: inline-block; background: var(--pale); border: 1.5px solid var(--border);
+  border-radius: 10px; padding: 10px 18px; margin: 14px 0;
+  font-size: 0.84rem; font-weight: 700; color: var(--primary);
+}
+.vc-cancel-btn {
+  background: none; border: 1.5px solid var(--border); border-radius: 10px;
+  padding: 9px 22px; color: var(--muted); font-size: 0.84rem; font-weight: 700;
+  cursor: pointer; font-family: 'Nunito', sans-serif; margin-top: 10px;
+  transition: all 0.2s;
+}
+.vc-cancel-btn:hover { border-color: #ef4444; color: #ef4444; }
+
+/* ── FEATURES GRID ── */
+.vc-features { background: white; }
+.vc-feat-grid {
+  display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; margin-top: 32px;
+}
+.vc-feat-card {
+  border: 1.5px solid var(--border); border-radius: var(--radius-lg); padding: 22px 18px;
+  background: var(--bg); transition: all 0.3s;
+}
+.vc-feat-card:hover { background: white; border-color: var(--primary); box-shadow: var(--shadow-md); transform: translateY(-4px); }
+.vc-feat-ico { font-size: 2rem; margin-bottom: 12px; }
+.vc-feat-card h4 { font-family: 'Sora', sans-serif; font-size: 0.9rem; font-weight: 800; color: var(--dark); margin-bottom: 6px; }
+.vc-feat-card p { font-size: 0.78rem; color: var(--muted); line-height: 1.6; }
+
+/* ── FILTER BAR ── */
+.vc-filter-bar {
+  display: flex; gap: 10px; flex-wrap: wrap; align-items: center;
+  margin-bottom: 22px;
+}
+.vc-filter-bar .search-box { flex: 1; min-width: 180px; }
+
+/* RESPONSIVE */
+@media (max-width: 900px) {
+  .vc-docs-grid { grid-template-columns: repeat(2, 1fr); }
+  .vc-steps-row { grid-template-columns: repeat(2, 1fr); }
+  .vc-feat-grid { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 600px) {
+  .vc-docs-grid { grid-template-columns: 1fr; }
+  .vc-steps-row { grid-template-columns: 1fr; }
+  .vc-feat-grid { grid-template-columns: 1fr; }
+  .vc-hero h1 { font-size: 1.8rem; }
+  .vc-slots-grid { grid-template-columns: repeat(2, 1fr); }
+  .vc-hero-stats { gap: 18px; }
+  .vc-stat .num { font-size: 1.4rem; }
+}
+</style>
+</head>
+<body>
+
+<!-- NAVBAR -->
+<header class="nav-wrap">
+  <nav class="navbar">
+    <a class="nav-logo" href="index.html">Tele<span>Care</span></a>
+    <ul class="nav-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="index.html#about">About</a></li>
+      <li><a href="index.html#doctors">Doctors</a></li>
+      <li><a href="video_consult.html" class="active">Video Consult</a></li>
+      <li><a href="index.html#contact">Contact</a></li>
+      <li><a href="login.html" class="btn-nav">Login</a></li>
+    </ul>
+    <button class="hamburger" onclick="toggleMenu()" id="menuBtn"><span></span><span></span><span></span></button>
+  </nav>
+</header>
+<div class="mobile-nav" id="mobileNav">
+  <a href="index.html" onclick="closeMob()">Home</a>
+  <a href="index.html#about" onclick="closeMob()">About</a>
+  <a href="index.html#doctors" onclick="closeMob()">Doctors</a>
+  <a href="video_consult.html" onclick="closeMob()">Video Consult</a>
+  <a href="index.html#contact" onclick="closeMob()">Contact</a>
+  <a href="login.html">Login</a>
+</div>
+
+<!-- HERO -->
+<section class="vc-hero">
+  <div class="vc-hero-badge">
+    <span class="vc-live-dot"></span>
+    Video Consultation — Live Now
+  </div>
+  <h1>Consult a Doctor <span>Via Video Call</span></h1>
+  <p>Connect face-to-face with Pakistan's top specialists from the comfort of your home. Secure, private, and instant.</p>
+  <div class="vc-hero-stats">
+    <div class="vc-stat"><div class="num" id="heroOnlineCount">—</div><div class="lbl">Doctors Online Now</div></div>
+    <div class="vc-stat"><div class="num">2 min</div><div class="lbl">Avg. Wait Time</div></div>
+    <div class="vc-stat"><div class="num">100%</div><div class="lbl">Encrypted & Secure</div></div>
+    <div class="vc-stat"><div class="num">24/7</div><div class="lbl">Available</div></div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section class="vc-how">
+  <div class="section-wrap">
+    <div class="text-center">
+      <div class="section-tag">Simple Process</div>
+      <h2 class="section-title">How Video Consultation <span>Works</span></h2>
+      <p class="section-sub">Get medical advice in 4 easy steps — no travel, no wait rooms.</p>
+    </div>
+    <div class="vc-steps-row">
+      <div class="vc-step-card">
+        <div class="vc-step-num">1</div>
+        <span class="vc-step-icon">🔍</span>
+        <h4>Find Available Doctor</h4>
+        <p>Browse doctors with real-time availability status. Green means ready for your call right now.</p>
+      </div>
+      <div class="vc-step-card">
+        <div class="vc-step-num">2</div>
+        <span class="vc-step-icon">📅</span>
+        <h4>Select Time Slot</h4>
+        <p>Pick a video call slot that fits your schedule — same-day slots always available.</p>
+      </div>
+      <div class="vc-step-card">
+        <div class="vc-step-num">3</div>
+        <span class="vc-step-icon">🔗</span>
+        <h4>Get Your Link</h4>
+        <p>Receive a secure Google Meet link via the confirmation screen instantly.</p>
+      </div>
+      <div class="vc-step-card">
+        <div class="vc-step-num">4</div>
+        <span class="vc-step-icon">📹</span>
+        <h4>Start Consultation</h4>
+        <p>Join the video call at your scheduled time and consult with your doctor face-to-face.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- DOCTORS LIST -->
+<section style="background: var(--bg);">
+  <div class="section-wrap">
+    <div class="text-center" style="margin-bottom:28px;">
+      <div class="section-tag">Live Availability</div>
+      <h2 class="section-title">Available Doctors <span>Right Now</span></h2>
+      <p class="section-sub">Availability updates in real-time. Green = available for instant call.</p>
+    </div>
+
+    <!-- Filter Bar -->
+    <div class="vc-filter-bar">
+      <div class="search-box">
+        <input type="text" id="vcSearch" placeholder="Search doctor or specialty..." oninput="filterVCDocs()">
+        <button><svg viewBox="0 0 24 24" width="16" height="16"><circle cx="11" cy="11" r="7" fill="none" stroke="currentColor" stroke-width="2"/><line x1="20" y1="20" x2="16.5" y2="16.5" stroke="currentColor" stroke-width="2"/></svg></button>
+      </div>
+      <div class="filter-chips">
+        <span class="f-chip on" data-filter="all" onclick="setVCFilter('all',this)">All</span>
+        <span class="f-chip" data-filter="available" onclick="setVCFilter('available',this)">🟢 Available Now</span>
+        <span class="f-chip" data-filter="busy" onclick="setVCFilter('busy',this)">🟡 In Session</span>
+      </div>
+    </div>
+
+    <!-- Legend -->
+    <div class="avail-legend">
+      <div class="avail-pill available"><span class="avail-dot green"></span> Available Now</div>
+      <div class="avail-pill busy"><span class="avail-dot yellow"></span> In Session</div>
+      <div class="avail-pill offline"><span class="avail-dot gray"></span> Offline Today</div>
+    </div>
+
+    <div class="vc-docs-grid" id="vcDocsGrid"></div>
+  </div>
+</section>
+
+<!-- FEATURES -->
+<section class="vc-features">
+  <div class="section-wrap">
+    <div class="text-center">
+      <div class="section-tag">Why Choose Video</div>
+      <h2 class="section-title">Benefits of <span>Video Consultation</span></h2>
+    </div>
+    <div class="vc-feat-grid">
+      <div class="vc-feat-card">
+        <div class="vc-feat-ico">🔒</div>
+        <h4>End-to-End Encrypted</h4>
+        <p>All consultations use Google Meet's enterprise-grade encryption. Your health conversations stay private.</p>
+      </div>
+      <div class="vc-feat-card">
+        <div class="vc-feat-ico">🏠</div>
+        <h4>Consult From Home</h4>
+        <p>No travel, no waiting rooms. Get the same quality consultation from your bedroom, office, or anywhere.</p>
+      </div>
+      <div class="vc-feat-card">
+        <div class="vc-feat-ico">⚡</div>
+        <h4>Instant Confirmation</h4>
+        <p>Book and get your Google Meet link within seconds. No waiting for approvals or callbacks.</p>
+      </div>
+      <div class="vc-feat-card">
+        <div class="vc-feat-ico">📋</div>
+        <h4>Digital Prescription</h4>
+        <p>Receive your prescription digitally after the consultation. Easily share with any pharmacy.</p>
+      </div>
+      <div class="vc-feat-card">
+        <div class="vc-feat-ico">🔄</div>
+        <h4>Easy Follow-Ups</h4>
+        <p>Schedule follow-up consultations in one click. Your history and notes are saved automatically.</p>
+      </div>
+      <div class="vc-feat-card">
+        <div class="vc-feat-ico">💰</div>
+        <h4>Save Time & Money</h4>
+        <p>No commute costs, no parking fees. Video consultation fees are often lower than clinic visits.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <p style="margin-bottom:8px;"><strong style="color:var(--light-green);">TeleCare</strong> — Pakistan's Trusted Healthcare Platform</p>
+  <p>© 2025 TeleCare. All rights reserved. &nbsp;|&nbsp;
+    <a href="index.html#about">About</a> &nbsp;|&nbsp;
+    <a href="index.html#services">Services</a> &nbsp;|&nbsp;
+    <a href="index.html#contact">Contact</a>
+  </p>
+</footer>
+
+<!-- VIDEO BOOKING MODAL -->
+<div class="vc-modal-overlay" id="vcModalOv" onclick="if(event.target===this)closeVCModal()">
+  <div class="vc-modal" id="vcModal">
+
+    <!-- STATE: SLOTS -->
+    <div id="vcStateSlots">
+      <div class="vc-modal-head">
+        <button class="vc-modal-close" onclick="closeVCModal()">×</button>
+        <div class="vc-modal-doc-av" id="vm-av">DR</div>
+        <div>
+          <h3 id="vm-name">Dr. Ahmed Ali</h3>
+          <p id="vm-spec">Cardiologist · City Care Hospital</p>
+          <div class="vc-modal-status" id="vm-status">
+            <span class="avail-dot green" style="width:6px;height:6px;border-radius:50%;"></span>
+            Available Now
+          </div>
+        </div>
+      </div>
+      <div class="vc-modal-body">
+        <h4>Select a Video Call Time Slot</h4>
+        <div class="vc-slots-grid" id="vmSlotsGrid"></div>
+        <div class="form-group">
+          <label>Your Name *</label>
+          <input type="text" id="vmName" placeholder="Enter your full name">
+        </div>
+        <div class="form-group">
+          <label>Email (for Meet link) *</label>
+          <input type="email" id="vmEmail" placeholder="Enter your email">
+        </div>
+        <div class="form-group">
+          <label>Brief Concern</label>
+          <input type="text" id="vmConcern" placeholder="e.g. chest pain, skin rash...">
+        </div>
+        <div class="alert" id="vmAlert"></div>
+        <button class="vc-confirm-btn" id="vmConfirmBtn" onclick="confirmVideoCall()">
+          📹 Book Video Consultation
+        </button>
+      </div>
+    </div>
+
+    <!-- STATE: WAITING -->
+    <div id="vcStateWaiting" style="display:none;">
+      <div class="vc-modal-body">
+        <div class="vc-waiting">
+          <div class="vc-waiting-anim"></div>
+          <h3>Booking Your Consultation</h3>
+          <p>Connecting you with <strong id="wt-doc">Dr. Ahmed Ali</strong>...</p>
+          <div class="vc-est-time" id="wt-slot">Slot: 04:00 PM</div>
+          <p style="font-size:0.8rem;">Generating your secure Google Meet link...</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- STATE: CONFIRMED -->
+    <div id="vcStateConfirm" style="display:none;">
+      <div class="vc-modal-body" style="text-align:center; padding:28px 22px;">
+        <div style="width:62px;height:62px;border-radius:18px;background:linear-gradient(135deg,#059669,#10b981);display:flex;align-items:center;justify-content:center;margin:0 auto 16px;box-shadow:0 6px 20px rgba(5,150,105,0.4);">
+          <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+        </div>
+        <h3 style="font-family:'Sora',sans-serif;font-size:1.3rem;font-weight:800;color:var(--dark);margin-bottom:8px;">Consultation Booked!</h3>
+        <p style="color:var(--muted);font-size:0.86rem;margin-bottom:16px;">Your video call has been scheduled successfully.</p>
+        <div class="modal-det-box">
+          <div id="vcConfirmDetails"></div>
+        </div>
+        <div style="background:#ecfdf5;border:1.5px solid #a7f3d0;border-radius:12px;padding:14px;margin:14px 0;text-align:left;">
+          <strong style="font-family:'Sora',sans-serif;font-size:0.82rem;color:#065f46;display:block;margin-bottom:8px;">📹 Your Google Meet Link</strong>
+          <a id="vcMeetLink" href="#" target="_blank"
+             style="display:inline-block;background:#0d9488;color:white;padding:10px 18px;border-radius:9px;font-weight:800;font-size:0.84rem;text-decoration:none;width:100%;text-align:center;box-shadow:0 3px 10px rgba(13,148,136,0.35);">
+            🎥 Join Video Call
+          </a>
+          <p style="font-size:0.72rem;color:#6b7280;margin-top:8px;">This link will be active at your scheduled time. Share with doctor if needed.</p>
+        </div>
+        <button onclick="closeVCModal()" class="vc-confirm-btn" style="margin-top:6px;">Done</button>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+/* ── DOCTORS DATA (same as main page, + video availability) ── */
+const VC_DOCS = [
+  { id:1,  name:"Dr. Ahmed Ali",    spec:"Cardiologist",      hosp:"City Care Hospital",     city:"Faisalabad", exp:"10+ Yrs", fee:"Rs. 800",  rate:4.8, rev:120, avail:"available", about:"Heart diseases, preventive care, ECG.", slots:["04:00 PM","05:00 PM","06:00 PM","07:00 PM","08:00 PM"], takenSlots:["06:00 PM"] },
+  { id:2,  name:"Dr. Sara Khan",    spec:"Dermatologist",     hosp:"Health Plus Hospital",   city:"Lahore",     exp:"8+ Yrs",  fee:"Rs. 1,000",rate:4.7, rev:98,  avail:"available", about:"Skin diseases, acne, cosmetic, laser.", slots:["10:00 AM","11:00 AM","12:00 PM","02:00 PM","03:00 PM"], takenSlots:[] },
+  { id:3,  name:"Dr. Usman Farooq", spec:"Neurologist",       hosp:"Metro Hospital",         city:"Islamabad",  exp:"12+ Yrs", fee:"Rs. 1,200",rate:4.9, rev:110, avail:"busy",      about:"Epilepsy, stroke, neurodegenerative.", slots:["03:00 PM","04:00 PM","05:00 PM","06:00 PM"], takenSlots:["03:00 PM","04:00 PM"] },
+  { id:4,  name:"Dr. Ayesha Malik", spec:"Pediatrician",      hosp:"Children Care Hospital", city:"Lahore",     exp:"6+ Yrs",  fee:"Rs. 700",  rate:4.6, rev:85,  avail:"available", about:"Child health, vaccinations, growth.", slots:["09:00 AM","10:00 AM","11:00 AM","01:00 PM","02:00 PM"], takenSlots:["10:00 AM"] },
+  { id:5,  name:"Dr. Bilal Hussain",spec:"Orthopedic",        hosp:"Bone & Joint Clinic",    city:"Faisalabad", exp:"9+ Yrs",  fee:"Rs. 900",  rate:4.8, rev:74,  avail:"busy",      about:"Fractures, joints, sports injuries.", slots:["04:00 PM","05:00 PM","06:00 PM","07:00 PM"], takenSlots:["04:00 PM","05:00 PM","06:00 PM"] },
+  { id:6,  name:"Dr. Nadia Rehman", spec:"Dermatologist",     hosp:"Skin Care Centre",       city:"Islamabad",  exp:"5+ Yrs",  fee:"Rs. 800",  rate:4.5, rev:60,  avail:"available", about:"Acne, allergies, cosmetic procedures.", slots:["11:00 AM","12:00 PM","01:00 PM","02:00 PM","03:00 PM"], takenSlots:[] },
+  { id:7,  name:"Dr. Hassan Raza",  spec:"General Physician", hosp:"Al-Shifa Clinic",        city:"Faisalabad", exp:"7+ Yrs",  fee:"Rs. 600",  rate:4.6, rev:92,  avail:"available", about:"Fever, flu, diabetes, BP management.", slots:["09:00 AM","10:00 AM","11:00 AM","01:00 PM"], takenSlots:["09:00 AM"] },
+  { id:8,  name:"Dr. Fatima Noor",  spec:"Ophthalmologist",   hosp:"Vision Eye Hospital",    city:"Faisalabad", exp:"6+ Yrs",  fee:"Rs. 750",  rate:4.7, rev:55,  avail:"offline",   about:"Eye problems, cataract, retinal care.", slots:[], takenSlots:[] },
+  { id:9,  name:"Dr. Imran Shah",   spec:"Cardiologist",      hosp:"Heart Institute",        city:"Lahore",     exp:"11+ Yrs", fee:"Rs. 1,100",rate:4.8, rev:88,  avail:"available", about:"Preventive heart care, hypertension.", slots:["03:00 PM","04:00 PM","05:00 PM","06:00 PM","07:00 PM"], takenSlots:["03:00 PM"] },
+  { id:10, name:"Dr. Rabia Tariq",  spec:"Neurologist",       hosp:"Neuro Care",             city:"Lahore",     exp:"9+ Yrs",  fee:"Rs. 1,000",rate:4.7, rev:67,  avail:"offline",   about:"Headaches, seizures, nerve disorders.", slots:[], takenSlots:[] },
+  { id:11, name:"Dr. Kamran Ali",   spec:"Orthopedic",        hosp:"Ortho Plus",             city:"Lahore",     exp:"8+ Yrs",  fee:"Rs. 950",  rate:4.6, rev:71,  avail:"available", about:"Knee, back pain, fracture, rehab.", slots:["04:00 PM","05:00 PM","06:00 PM","07:00 PM"], takenSlots:["05:00 PM"] },
+  { id:12, name:"Dr. Sana Iqbal",   spec:"Pediatrician",      hosp:"PIMS Children Wing",     city:"Islamabad",  exp:"7+ Yrs",  fee:"Rs. 850",  rate:4.8, rev:102, avail:"busy",      about:"Infants, vaccinations, child emergencies.", slots:["09:00 AM","10:00 AM","11:00 AM","02:00 PM"], takenSlots:["09:00 AM","10:00 AM"] },
+  { id:13, name:"Dr. Omar Javed",   spec:"Cardiologist",      hosp:"Capital Heart Center",   city:"Islamabad",  exp:"13+ Yrs", fee:"Rs. 1,300",rate:4.9, rev:95,  avail:"available", about:"Complex heart conditions, follow-up.", slots:["02:00 PM","03:00 PM","04:00 PM","05:00 PM","06:00 PM"], takenSlots:[] },
+  { id:14, name:"Dr. Hina Akram",   spec:"General Physician", hosp:"Family Health Clinic",   city:"Islamabad",  exp:"5+ Yrs",  fee:"Rs. 650",  rate:4.5, rev:48,  avail:"available", about:"General illness, health screenings.", slots:["10:00 AM","11:00 AM","12:00 PM","01:00 PM","02:00 PM"], takenSlots:["12:00 PM"] },
+];
+
+let vcFilter = 'all';
+let vcSearchQ = '';
+let currentVCDoc = null;
+let selectedVCSlot = '';
+
+function initials(name) {
+  const p = name.replace(/^Dr\.\s*/i,'').trim().split(/\s+/);
+  return (p[0]?.[0]||'') + (p[1]?.[0]||'');
+}
+
+function availLabel(a) {
+  if(a==='available') return {cls:'avail', text:'Available Now', dotCls:'green'};
+  if(a==='busy') return {cls:'busy', text:'In Session', dotCls:'yellow'};
+  return {cls:'offline', text:'Offline', dotCls:'gray'};
+}
+
+function nextSlotText(doc) {
+  const free = doc.slots.filter(s => !doc.takenSlots.includes(s));
+  if(doc.avail==='offline') return {cls:'offline', text:'Not available today', sub:''};
+  if(free.length===0) return {cls:'busy', text:'No free slots today', sub:''};
+  return {cls:'available', text:'Next: ' + free[0], sub:`${free.length} slot${free.length>1?'s':''} free`};
+}
+
+function renderVCDocs() {
+  const grid = document.getElementById('vcDocsGrid');
+  let docs = VC_DOCS.filter(d => {
+    const q = vcSearchQ.toLowerCase();
+    const matchQ = !q || d.name.toLowerCase().includes(q) || d.spec.toLowerCase().includes(q) || d.city.toLowerCase().includes(q);
+    const matchF = vcFilter==='all' || d.avail===vcFilter;
+    return matchQ && matchF;
+  });
+
+  // count online
+  const onlineCount = VC_DOCS.filter(d=>d.avail==='available').length;
+  document.getElementById('heroOnlineCount').textContent = onlineCount;
+
+  if(!docs.length) {
+    grid.innerHTML = '<p style="grid-column:1/-1;text-align:center;color:var(--muted);padding:40px;font-size:0.9rem;">No doctors found matching your filter.</p>';
+    return;
+  }
+
+  grid.innerHTML = docs.map(doc => {
+    const al = availLabel(doc.avail);
+    const ns = nextSlotText(doc);
+    const free = doc.slots.filter(s=>!doc.takenSlots.includes(s));
+    const canCall = doc.avail !== 'offline';
+    return `
+      <div class="vc-doc-card">
+        <div class="vc-doc-top">
+          <div class="vc-avail-badge ${al.cls}">
+            <span class="dot"></span> ${al.text}
+          </div>
+          <div class="vc-doc-av">${initials(doc.name)}</div>
+          <div class="vc-doc-info">
+            <div class="doc-name">${doc.name}</div>
+            <div class="doc-spec">${doc.spec}</div>
+          </div>
+        </div>
+        <div class="vc-doc-body">
+          <div class="vc-doc-meta">
+            <span>🏥 ${doc.hosp}</span>
+            <span>🏙️ ${doc.city} · ${doc.exp} exp</span>
+            <span>⭐ ${doc.rate} (${doc.rev} reviews)</span>
+          </div>
+          <div class="vc-next-slot ${ns.cls}">
+            <strong>${ns.text}</strong>
+            ${ns.sub ? `<span>${ns.sub}</span>` : ''}
+          </div>
+        </div>
+        <div class="vc-card-btns">
+          <button class="btn btn-outline btn-sm" onclick="showDocProfile(${doc.id})">Profile</button>
+          <button class="btn btn-video btn-sm" ${canCall?'':'disabled'}
+            onclick="${canCall?`openVCModal(${doc.id})`:''}">
+            📹 ${doc.avail==='available'?'Video Call':doc.avail==='busy'?'Schedule':'Unavailable'}
+          </button>
+        </div>
+      </div>`;
+  }).join('');
+}
+
+function setVCFilter(f, el) {
+  vcFilter = f;
+  document.querySelectorAll('.vc-filter-bar .f-chip').forEach(c=>c.classList.remove('on'));
+  el.classList.add('on');
+  renderVCDocs();
+}
+function filterVCDocs() {
+  vcSearchQ = document.getElementById('vcSearch').value;
+  renderVCDocs();
+}
+
+function openVCModal(docId) {
+  currentVCDoc = VC_DOCS.find(d=>d.id===docId);
+  if(!currentVCDoc) return;
+  selectedVCSlot = '';
+  // Reset states
+  document.getElementById('vcStateSlots').style.display='block';
+  document.getElementById('vcStateWaiting').style.display='none';
+  document.getElementById('vcStateConfirm').style.display='none';
+  // Fill header
+  document.getElementById('vm-av').textContent = initials(currentVCDoc.name);
+  document.getElementById('vm-name').textContent = currentVCDoc.name;
+  document.getElementById('vm-spec').textContent = currentVCDoc.spec + ' · ' + currentVCDoc.hosp;
+  // Availability status
+  const al = availLabel(currentVCDoc.avail);
+  const statusEl = document.getElementById('vm-status');
+  statusEl.innerHTML = `<span class="avail-dot ${al.dotCls}" style="width:7px;height:7px;border-radius:50%;background:${al.dotCls==='green'?'#22c55e':al.dotCls==='yellow'?'#f59e0b':'#9ca3af'};${al.dotCls==='green'?'animation:pulse 1.5s infinite;':''}"></span> ${al.text}`;
+  // Fill slots
+  renderVCSlots();
+  // Clear form
+  document.getElementById('vmName').value = '';
+  document.getElementById('vmEmail').value = '';
+  document.getElementById('vmConcern').value = '';
+  document.getElementById('vmAlert').className = 'alert';
+  document.getElementById('vcModalOv').classList.add('show');
+}
+
+function renderVCSlots() {
+  const grid = document.getElementById('vmSlotsGrid');
+  if(!currentVCDoc.slots.length) {
+    grid.innerHTML = '<p style="grid-column:1/-1;color:var(--muted);font-size:0.82rem;">No slots available today.</p>';
+    return;
+  }
+  grid.innerHTML = currentVCDoc.slots.map(s => {
+    const taken = currentVCDoc.takenSlots.includes(s);
+    const sel = s===selectedVCSlot;
+    return `<button class="vc-slot-btn ${taken?'taken':''} ${sel&&!taken?'selected':''}" onclick="selectVCSlot('${s}',this)" ${taken?'disabled':''}>${s}${taken?'<br><span style="font-size:0.6rem;opacity:0.7">Booked</span>':''}</button>`;
+  }).join('');
+}
+
+function selectVCSlot(slot, el) {
+  if(el.classList.contains('taken')) return;
+  selectedVCSlot = slot;
+  document.querySelectorAll('.vc-slot-btn').forEach(b=>b.classList.remove('selected'));
+  el.classList.add('selected');
+}
+
+function confirmVideoCall() {
+  const al = document.getElementById('vmAlert');
+  al.className = 'alert';
+  const name = document.getElementById('vmName').value.trim();
+  const email = document.getElementById('vmEmail').value.trim();
+  const concern = document.getElementById('vmConcern').value.trim();
+  if(!name) { al.className='alert err'; al.textContent='⚠️ Please enter your name.'; return; }
+  if(!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { al.className='alert err'; al.textContent='⚠️ Please enter a valid email.'; return; }
+  if(!selectedVCSlot) { al.className='alert err'; al.textContent='⚠️ Please select a time slot.'; return; }
+
+  // Show waiting
+  document.getElementById('vcStateSlots').style.display='none';
+  document.getElementById('vcStateWaiting').style.display='block';
+  document.getElementById('wt-doc').textContent = currentVCDoc.name;
+  document.getElementById('wt-slot').textContent = 'Slot: ' + selectedVCSlot;
+
+  // Simulate async booking (real app: call video_consult_backend.php)
+  setTimeout(() => {
+    // Generate Google Meet-style link
+    const meetId = 'tlc-' + Math.random().toString(36).substring(2,6) + '-' + Math.random().toString(36).substring(2,6);
+    const meetUrl = `https://meet.google.com/${meetId}`;
+    // Show confirmation
+    document.getElementById('vcStateWaiting').style.display='none';
+    document.getElementById('vcStateConfirm').style.display='block';
+    document.getElementById('vcMeetLink').href = meetUrl;
+    document.getElementById('vcMeetLink').textContent = '🎥 Join Video Call — ' + meetUrl.replace('https://','');
+    document.getElementById('vcConfirmDetails').innerHTML =
+      `<div style="font-size:0.82rem;line-height:2;">
+        <b>👨‍⚕️ Doctor:</b> ${currentVCDoc.name}<br>
+        <b>🩺 Specialty:</b> ${currentVCDoc.spec}<br>
+        <b>🏥 Hospital:</b> ${currentVCDoc.hosp}<br>
+        <b>⏰ Time:</b> ${selectedVCSlot} Today<br>
+        <b>👤 Patient:</b> ${name}<br>
+        <b>💰 Fee:</b> ${currentVCDoc.fee}<br>
+        <b>📍 City:</b> ${currentVCDoc.city}
+      </div>`;
+    // Mark slot as taken
+    if(!currentVCDoc.takenSlots.includes(selectedVCSlot))
+      currentVCDoc.takenSlots.push(selectedVCSlot);
+    renderVCDocs();
+  }, 2200);
+}
+
+function closeVCModal() {
+  document.getElementById('vcModalOv').classList.remove('show');
+}
+
+function showDocProfile(id) {
+  const d = VC_DOCS.find(x=>x.id===id);
+  if(!d) return;
+  alert(`${d.name}\n${d.spec} | ${d.hosp} | ${d.city}\nExperience: ${d.exp} | Fee: ${d.fee}\nRating: ${d.rate}⭐ (${d.rev} reviews)\n\n${d.about}`);
+}
+
+// Navbar
+function toggleMenu() {
+  const nav = document.getElementById('mobileNav');
+  const open = nav.classList.toggle('show');
+  document.getElementById('menuBtn').setAttribute('aria-expanded', open ? 'true' : 'false');
+}
+function closeMob() { document.getElementById('mobileNav').classList.remove('show'); }
+
+// Init
+renderVCDocs();
+</script>
+</body>
+</html>
